@@ -1,0 +1,71 @@
+#! /usr/bin/vvp
+:ivl_version "12.0 (stable)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "/usr/lib64/ivl/system.vpi";
+:vpi_module "/usr/lib64/ivl/vhdl_sys.vpi";
+:vpi_module "/usr/lib64/ivl/vhdl_textio.vpi";
+:vpi_module "/usr/lib64/ivl/v2005_math.vpi";
+:vpi_module "/usr/lib64/ivl/va_math.vpi";
+S_0x5567d1d37330 .scope module, "test_f5" "test_f5" 2 14;
+ .timescale 0 0;
+v0x5567d1d4a170_0 .net "a", 0 0, L_0x5567d1d4a740;  1 drivers
+o0x7f28465dc1c8 .functor BUFZ 1, C4<z>; HiZ drive
+v0x5567d1d4a210_0 .net "s", 0 0, o0x7f28465dc1c8;  0 drivers
+v0x5567d1d4a2b0_0 .var "x", 0 0;
+v0x5567d1d4a3b0_0 .var "y", 0 0;
+S_0x5567d1d374c0 .scope begin, "main" "main" 2 26, 2 26 0, S_0x5567d1d37330;
+ .timescale 0 0;
+S_0x5567d1d25ea0 .scope module, "moduloA" "guia0501" 2 22, 2 1 0, S_0x5567d1d37330;
+ .timescale 0 0;
+    .port_info 0 /OUTPUT 1 "s";
+    .port_info 1 /INPUT 1 "a";
+    .port_info 2 /INPUT 1 "b";
+L_0x5567d1d4a480 .functor NAND 1, v0x5567d1d4a2b0_0, v0x5567d1d4a2b0_0, C4<1>, C4<1>;
+L_0x5567d1d4a570 .functor NAND 1, v0x5567d1d4a3b0_0, v0x5567d1d4a3b0_0, C4<1>, C4<1>;
+L_0x5567d1d4a630 .functor NAND 1, L_0x5567d1d4a480, L_0x5567d1d4a570, C4<1>, C4<1>;
+L_0x5567d1d4a740 .functor NAND 1, L_0x5567d1d4a630, L_0x5567d1d4a630, C4<1>, C4<1>;
+v0x5567d1d260d0_0 .net "a", 0 0, v0x5567d1d4a2b0_0;  1 drivers
+v0x5567d1d49d00_0 .net "b", 0 0, v0x5567d1d4a3b0_0;  1 drivers
+v0x5567d1d49dc0_0 .net "q", 0 0, L_0x5567d1d4a630;  1 drivers
+v0x5567d1d49e60_0 .net "s", 0 0, L_0x5567d1d4a740;  alias, 1 drivers
+v0x5567d1d49f20_0 .net "sa", 0 0, L_0x5567d1d4a480;  1 drivers
+v0x5567d1d4a030_0 .net "sb", 0 0, L_0x5567d1d4a570;  1 drivers
+    .scope S_0x5567d1d37330;
+T_0 ;
+    %fork t_1, S_0x5567d1d374c0;
+    %jmp t_0;
+    .scope S_0x5567d1d374c0;
+t_1 ;
+    %vpi_call 2 27 "$display", "Guia_0500 - Eduardo Murta De Abreu - 884985" {0 0 0};
+    %vpi_call 2 29 "$display", " x  y | s (~x & ~y)" {0 0 0};
+    %vpi_call 2 30 "$monitor", "%2b %2b | %2b", v0x5567d1d4a2b0_0, v0x5567d1d4a3b0_0, v0x5567d1d4a210_0 {0 0 0};
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5567d1d4a2b0_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5567d1d4a3b0_0, 0, 1;
+    %delay 1, 0;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5567d1d4a2b0_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5567d1d4a3b0_0, 0, 1;
+    %delay 1, 0;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5567d1d4a2b0_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5567d1d4a3b0_0, 0, 1;
+    %delay 1, 0;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5567d1d4a2b0_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5567d1d4a3b0_0, 0, 1;
+    %end;
+    .scope S_0x5567d1d37330;
+t_0 %join;
+    %end;
+    .thread T_0;
+# The file index is used to find the file name in the following table.
+:file_names 3;
+    "N/A";
+    "<interactive>";
+    "guia0501.v";

@@ -1,0 +1,78 @@
+#! /usr/bin/vvp
+:ivl_version "12.0 (stable)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "/usr/lib64/ivl/system.vpi";
+:vpi_module "/usr/lib64/ivl/vhdl_sys.vpi";
+:vpi_module "/usr/lib64/ivl/vhdl_textio.vpi";
+:vpi_module "/usr/lib64/ivl/v2005_math.vpi";
+:vpi_module "/usr/lib64/ivl/va_math.vpi";
+S_0x563d09fb2780 .scope module, "test_f5" "test_f5" 2 39;
+ .timescale 0 0;
+v0x563d09fc67d0_0 .net "a", 0 0, L_0x563d09fc6bf0;  1 drivers
+v0x563d09fc68a0_0 .net "b", 0 0, L_0x563d09fc6d70;  1 drivers
+v0x563d09fc6970_0 .var "x", 0 0;
+v0x563d09fc6a90_0 .var "y", 0 0;
+S_0x563d09fb2910 .scope begin, "main" "main" 2 48, 2 48 0, S_0x563d09fb2780;
+ .timescale 0 0;
+S_0x563d09fb1900 .scope module, "moduloA" "f5a" 2 44, 2 15 0, S_0x563d09fb2780;
+ .timescale 0 0;
+    .port_info 0 /OUTPUT 1 "s";
+    .port_info 1 /INPUT 1 "a";
+    .port_info 2 /INPUT 1 "b";
+L_0x563d09fc6b80 .functor NOT 1, v0x563d09fc6970_0, C4<0>, C4<0>, C4<0>;
+L_0x563d09fc6bf0 .functor AND 1, L_0x563d09fc6b80, v0x563d09fc6a90_0, C4<1>, C4<1>;
+v0x563d09fb1b30_0 .net "a", 0 0, v0x563d09fc6970_0;  1 drivers
+v0x563d09fc5f40_0 .net "b", 0 0, v0x563d09fc6a90_0;  1 drivers
+v0x563d09fc6000_0 .net "not_a", 0 0, L_0x563d09fc6b80;  1 drivers
+v0x563d09fc60a0_0 .net "s", 0 0, L_0x563d09fc6bf0;  alias, 1 drivers
+S_0x563d09fc61e0 .scope module, "moduloB" "f5b" 2 45, 2 33 0, S_0x563d09fb2780;
+ .timescale 0 0;
+    .port_info 0 /OUTPUT 1 "s";
+    .port_info 1 /INPUT 1 "a";
+    .port_info 2 /INPUT 1 "b";
+L_0x563d09fc6d00 .functor NOT 1, v0x563d09fc6970_0, C4<0>, C4<0>, C4<0>;
+L_0x563d09fc6d70 .functor AND 1, L_0x563d09fc6d00, v0x563d09fc6a90_0, C4<1>, C4<1>;
+v0x563d09fc6440_0 .net *"_ivl_0", 0 0, L_0x563d09fc6d00;  1 drivers
+v0x563d09fc6520_0 .net "a", 0 0, v0x563d09fc6970_0;  alias, 1 drivers
+v0x563d09fc6610_0 .net "b", 0 0, v0x563d09fc6a90_0;  alias, 1 drivers
+v0x563d09fc6710_0 .net "s", 0 0, L_0x563d09fc6d70;  alias, 1 drivers
+    .scope S_0x563d09fb2780;
+T_0 ;
+    %fork t_1, S_0x563d09fb2910;
+    %jmp t_0;
+    .scope S_0x563d09fb2910;
+t_1 ;
+    %vpi_call 2 49 "$display", "Guia_0500 - Eduardo Murta De Abreu - 884985" {0 0 0};
+    %vpi_call 2 50 "$display", "Test module" {0 0 0};
+    %vpi_call 2 51 "$display", " x y a b" {0 0 0};
+    %vpi_call 2 53 "$monitor", "%4b %4b %4b %4b", v0x563d09fc6970_0, v0x563d09fc6a90_0, v0x563d09fc67d0_0, v0x563d09fc68a0_0 {0 0 0};
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x563d09fc6970_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x563d09fc6a90_0, 0, 1;
+    %delay 1, 0;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x563d09fc6970_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x563d09fc6a90_0, 0, 1;
+    %delay 1, 0;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x563d09fc6970_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x563d09fc6a90_0, 0, 1;
+    %delay 1, 0;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x563d09fc6970_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x563d09fc6a90_0, 0, 1;
+    %end;
+    .scope S_0x563d09fb2780;
+t_0 %join;
+    %end;
+    .thread T_0;
+# The file index is used to find the file name in the following table.
+:file_names 3;
+    "N/A";
+    "<interactive>";
+    "guia05.v";
