@@ -2,42 +2,50 @@
 #include <stdlib.h>
 #include <string.h>
 
-int tamanho(char string[]){
-    int i = 0;
-    while(string[i] != '\0'){
-        i = i + 1;
-    }
-    return i;
-}
-
-int verificaAna(char string[]){
+int verificaAna(char s1[], char s2[]){
     int retorno = 1;
+    int freq[26] = {0};
     int i = 0;
-    int j = tamanho(string) - 1;//nao achei um jeito melhor de fazer a remocao do \0 e \n 
-    
-    if (string[j] == '\n') j--;
-    if(tamanho(string) > 1){
-        while(i < j && string[i] != ' ' && string[j] != ' '){
-            if(string[i] != string[j]){
-                retorno = 0;
-            }
-            i++;
-            j--;
+    char c;
+
+    while(s1[i] != '\0'){
+        if(s1[i] != ' ' && s1[i] != '\n'){
+            c = s1[i];
+            if(c >= 'A' && c <= 'Z') c = c + 32;
+            freq[c - 'a']++;
         }
+        i++;
     }
+
+    i = 0;
+    while(s2[i] != '\0'){
+        if(s2[i] != ' ' && s2[i] != '\n'){
+            c = s2[i];
+            if(c >= 'A' && c <= 'Z') c = c + 32;
+            freq[c - 'a']--;
+        }
+        i++;
+    }
+
+    i = 0;
+    while(i < 26){
+        if(freq[i] != 0) retorno = 0;
+        i++;
+    }
+
     return retorno;
 }
 
 int main(){
-    char s1[100] = " ";
-    while(fgets(s1,100,stdin) != NULL){
-        if(verificaAna(s1) == 1){
-            printf("SIM");
-        }
-        else{
-            printf("NAO");
-        }
-        printf("\n");
+    char s1[100], s2[100];
+    fgets(s1, 100, stdin);
+    while(!(s1[0] == 'F' && s1[1] == 'I' && s1[2] == 'M')){
+        fgets(s2, 100, stdin);
+        if(verificaAna(s1, s2) == 1)
+            printf("SIM\n");
+        else
+            printf("NAO\n");
+        fgets(s1, 100, stdin);
     }
     return 0;
 }
