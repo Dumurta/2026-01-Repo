@@ -9,7 +9,7 @@ class Ls{
             }
         }
         return resp;
-    }//end engual (o nome e' proposital)
+    }//end engual
     public static boolean vogais(String s1){
         boolean resp = true;
         for(int i = 0; i < s1.length(); i++){
