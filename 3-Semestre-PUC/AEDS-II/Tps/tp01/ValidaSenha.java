@@ -1,6 +1,6 @@
 import java.util.Scanner;
-
-static boolean temMaiuscula(String s){
+public class ValidaSenha{
+public static boolean temMaiuscula(String s){
     boolean retorno = false;
     int i = 0;
     while(i < s.length()){
@@ -10,7 +10,7 @@ static boolean temMaiuscula(String s){
     return retorno;
 }
 
-static boolean temMinuscula(String s){
+public static boolean temMinuscula(String s){
     boolean retorno = false;
     int i = 0;
     while(i < s.length()){
@@ -20,7 +20,7 @@ static boolean temMinuscula(String s){
     return retorno;
 }
 
-static boolean temNumero(String s){
+public static boolean temNumero(String s){
     boolean retorno = false;
     int i = 0;
     while(i < s.length()){
@@ -30,7 +30,7 @@ static boolean temNumero(String s){
     return retorno;
 }
 
-static boolean temEspecial(String s){
+public static boolean temEspecial(String s){
     boolean retorno = false;
     int i = 0;
     while(i < s.length()){
@@ -46,7 +46,7 @@ static boolean temEspecial(String s){
     return retorno;
 }
 
-static boolean validaSenha(String s){
+public static boolean validaSenha(String s){
     boolean retorno = false;
     if(s.length() >= 8 &&
        temMaiuscula(s) &&
@@ -61,6 +61,13 @@ static boolean validaSenha(String s){
 
 public static void main(String[] args){
     Scanner sc = new Scanner(System.in);
-    while(
+    String Senha = sc.next();
+    while(!(Senha.charAt(0) == 'F' && Senha.charAt(1) == 'I' && Senha.charAt(2) == 'M')){
+        if(validaSenha(Senha) == true){ System.out.println("SIM");}
+        else{System.out.println("NAO");}
+        Senha = sc.next();
+    }
+    sc.close();
 
+}
 }
