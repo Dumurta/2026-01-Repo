@@ -1,0 +1,2 @@
+Professor, realizei a implementação deste guia com o auxílio do material fornecido, mas confesso que ainda nao compreendi bem o tema. Pretendo dedicar mais tempo para esta materia durante a semana e assim solucionar esse problema.
+Gostaria também de comunicar que estive ausente esta semana devido a complicações de saúde. Por conta disso, o Guia 07 segue atrasado, mas já estou trabalhando para finalizá-lo e enviá-lo junto do proximo Guia.

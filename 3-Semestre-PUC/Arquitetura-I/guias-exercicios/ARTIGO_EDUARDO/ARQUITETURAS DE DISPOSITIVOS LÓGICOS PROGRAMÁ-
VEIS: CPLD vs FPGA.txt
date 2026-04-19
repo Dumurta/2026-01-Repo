@@ -1,0 +1,140 @@
+**Eduardo Murta De Abreu¹ – 884985**
+¹Aluno do curso de Ciência da Computação – PUC Minas
+
+---
+
+# ARQUITETURAS DE DISPOSITIVOS LÓGICOS PROGRAMÁVEIS: CPLD vs FPGA
+
+## Resumo
+
+Os dispositivos lógicos programáveis têm desempenhado papel fundamental no desenvolvimento de sistemas digitais modernos, permitindo maior flexibilidade e redução de custos em relação a circuitos dedicados. Este trabalho apresenta uma análise das principais arquiteturas de dispositivos lógicos, incluindo ASIC, ASSP, SPLD, CPLD, FPGA e SoC, destacando suas características estruturais e aplicações. Além disso, são comparados dispositivos como PROM, PLA e PAL, evidenciando seus níveis de programabilidade e complexidade. O estudo também enfatiza a comparação entre CPLDs e FPGAs, abordando aspectos como desempenho, consumo de energia, custo e flexibilidade. Por fim, são analisados trabalhos relacionados que demonstram a evolução dessas tecnologias em sistemas embarcados e industriais. Conclui-se que a escolha do dispositivo ideal depende diretamente da complexidade e dos requisitos do sistema a ser implementado, sendo fundamental compreender suas características para uma decisão adequada.
+
+**Palavras-chave:** dispositivos programáveis; FPGA; CPLD; arquitetura digital; sistemas embarcados.
+
+---
+
+## Abstract
+
+Programmable logic devices have played a fundamental role in the development of modern digital systems, enabling greater flexibility and cost reduction compared to dedicated circuits. This work presents an analysis of the main programmable logic architectures, including ASIC, ASSP, SPLD, CPLD, FPGA, and SoC, highlighting their structural characteristics and applications. In addition, devices such as PROM, PLA, and PAL are compared, emphasizing their levels of programmability and complexity. The study also focuses on the comparison between CPLDs and FPGAs, addressing aspects such as performance, power consumption, cost, and flexibility. Finally, related works are analyzed to demonstrate the evolution of these technologies in embedded and industrial systems. It is concluded that the choice of the appropriate device depends on system complexity and requirements, making the understanding of these architectures essential.
+
+**Keywords:** programmable devices; FPGA; CPLD; digital architecture; embedded systems.
+
+---
+
+## 1 INTRODUÇÃO
+
+O avanço dos sistemas digitais tem impulsionado o desenvolvimento de dispositivos capazes de oferecer maior flexibilidade e desempenho na implementação de circuitos lógicos. Nesse contexto, os dispositivos lógicos programáveis destacam-se como alternativas eficientes aos circuitos integrados dedicados, permitindo reconfiguração e adaptação a diferentes aplicações (BROWN; ROSE, 2000).
+
+Entretanto, a diversidade de arquiteturas disponíveis, como ASIC, CPLD e FPGA, levanta a seguinte questão: como escolher a tecnologia mais adequada para uma determinada aplicação? Essa decisão envolve fatores como custo, desempenho, consumo de energia e complexidade do sistema.
+
+A importância desse estudo está na necessidade de compreender as características dessas tecnologias, possibilitando a seleção adequada de dispositivos em projetos de engenharia, especialmente em sistemas embarcados e industriais.
+
+O objetivo deste trabalho é analisar e comparar diferentes dispositivos lógicos programáveis, com ênfase nas arquiteturas CPLD e FPGA, destacando suas vantagens, limitações e aplicações.
+
+Este artigo está estruturado da seguinte forma: a Seção 2 apresenta o referencial teórico; a Seção 3 descreve os trabalhos relacionados; e a Seção 4 apresenta a conclusão do estudo.
+
+---
+
+## 2 REFERENCIAL TEÓRICO
+
+### 2.1 Dispositivos Lógicos Programáveis
+
+Os dispositivos lógicos programáveis permitem a implementação de circuitos digitais por meio de configuração, oferecendo maior flexibilidade em comparação a circuitos fixos (HAUCK; DEHON, 2007).
+
+#### 2.1.1 ASIC
+
+Os ASICs (Application-Specific Integrated Circuits) são circuitos desenvolvidos para aplicações específicas, oferecendo alto desempenho e baixo consumo de energia. Entretanto, possuem alto custo de desenvolvimento e baixa flexibilidade (BROWN; ROSE, 2000).
+
+#### 2.1.2 ASSP
+
+Os ASSPs (Application-Specific Standard Products) são dispositivos padronizados voltados para aplicações específicas, apresentando menor custo que ASICs e maior disponibilidade comercial (Hauck; DeHon, 2007).
+
+#### 2.1.3 SPLD
+
+Os SPLDs (Simple Programmable Logic Devices) são dispositivos de baixa complexidade compostos por portas lógicas programáveis, utilizados em aplicações simples (BROWN; ROSE, 2000).
+
+#### 2.1.4 CPLD
+
+Os CPLDs são compostos por macrocélulas interconectadas, oferecendo estrutura previsível, baixa latência e inicialização imediata. São amplamente utilizados em controle lógico e aplicações industriais (FREITAS; PASQUALINOTO; LEÃO, 2020).
+
+#### 2.1.5 FPGA
+
+Os FPGAs (Field-Programmable Gate Arrays) possuem blocos lógicos configuráveis (CLBs) e interconexões flexíveis, permitindo a implementação de sistemas complexos e processamento paralelo (HAUCK; DEHON, 2007).
+
+#### 2.1.6 SoC
+
+Os SoCs (System on Chip) integram múltiplos componentes em um único chip, como processadores, memória e interfaces, proporcionando alto desempenho e integração (HENNESSY; PATTERSON, 2011).
+
+---
+
+### 2.2 Comparação entre PROM, PLA e PAL
+
+Tabela 1 – Comparação entre PROM, PLA e PAL
+
++-------------+----------------+----------------+----------------+---------------+
+| Dispositivo | Matriz AND     | Matriz OR      | Flexibilidade  | Complexidade  |
++-------------+----------------+----------------+----------------+---------------+
+| PROM        | Fixa           | Programável    | Baixa          | Baixa         |
+| PLA         | Programável    | Programável    | Alta           | Alta          |
+| PAL         | Programável    | Fixa           | Média          | Média         |
++-------------+----------------+----------------+----------------+---------------+
+
+Os dispositivos PROM, PLA e PAL diferem principalmente quanto ao nível de programabilidade e flexibilidade, sendo o PLA o mais versátil e o PROM o mais limitado (BROWN; ROSE, 2000).
+
+---
+
+### 2.3 Comparação entre CPLD e FPGA
+
+Tabela 2 – Comparação entre CPLD e FPGA
+
++-----------------+---------------------------+-------------------------------+
+| Característica  | CPLD (Complex PLD)        | FPGA (Field Prog. Gate Array) |
++-----------------+---------------------------+-------------------------------+
+| Arquitetura     | Baseada em Macrocélulas   | Baseada em LUTs / CLBs        |
+| Volatilidade    | Não-volátil (Instant-on)  | Volátil (Precisa de boot)     |
+| Densidade       | Baixa / Média             | Altíssima                     |
+| Tempo de Atraso | Determinístico (Previsível)| Variável (Depende do roteio)  |
+| Consumo         | Baixo (Predominante)      | Elevado (Lógica Complexa)     |
+| Aplicação Ideal | Lógica de Controle/Cola   | Processamento de Alto Nível   |
++-----------------+---------------------------+-------------------------------+
+
+Os FPGAs apresentam maior capacidade e flexibilidade, sendo indicados para aplicações complexas, enquanto CPLDs oferecem maior previsibilidade e menor custo para aplicações simples (YANG, 2002; KONG, 2009).
+
+---
+
+## 3 TRABALHOS RELACIONADOS
+
+Yang (2002) realizou uma análise comparativa entre CPLDs e FPGAs, destacando diferenças em desempenho e aplicações. O estudo conclui que FPGAs apresentam maior capacidade de processamento devido à sua arquitetura baseada em blocos lógicos configuráveis.
+
+Kong (2009) propôs modelos de consumo de energia para CPLDs e FPGAs, evidenciando que, embora FPGAs ofereçam maior desempenho, podem apresentar maior consumo energético dependendo da aplicação.
+
+Brown e Rose (2000) analisaram a arquitetura de dispositivos programáveis, destacando o impacto das interconexões e LUTs no desempenho dos FPGAs. Em comparação, CPLDs apresentam estrutura mais simples e previsível.
+
+Hauck e DeHon (2007) discutem o uso de FPGAs como aceleradores de hardware, destacando sua importância em sistemas embarcados e aplicações de alto desempenho.
+
+Esses trabalhos demonstram que a escolha entre CPLD e FPGA depende diretamente dos requisitos do sistema, especialmente em termos de desempenho, consumo e complexidade.
+
+---
+
+## 4 CONCLUSÃO
+
+Os dispositivos lógicos programáveis representam uma solução essencial para o desenvolvimento de sistemas digitais modernos. A análise realizada evidencia que CPLDs são mais adequados para aplicações simples e de baixo custo, enquanto FPGAs são ideais para sistemas complexos que exigem alto desempenho e flexibilidade.
+
+A escolha da tecnologia adequada deve considerar fatores como custo, consumo de energia, desempenho e complexidade do projeto. Dessa forma, o conhecimento das arquiteturas torna-se fundamental para o desenvolvimento eficiente de sistemas digitais.
+
+---
+
+## REFERÊNCIAS
+
+BROWN, S.; ROSE, J. FPGA and CPLD architectures: a tutorial. IEEE Design & Test of Computers, 2000.
+
+FREITAS, T. T.; PASQUALINOTO, T. L.; LEÃO, J. C. O CPLD aplicado em automação industrial. 2020.
+
+HAUCK, S.; DEHON, A. Reconfigurable Computing: The Theory and Practice of FPGA-Based Computation. Morgan Kaufmann, 2007.
+
+HENNESSY, J.; PATTERSON, D. Computer Architecture: A Quantitative Approach. 2011.
+
+KONG, Y. Power modeling of CPLD and FPGA architectures. 2009.
+
+YANG, S. Comparison and application in performance of CPLD and FPGA devices. 2002.
+
