@@ -9,19 +9,18 @@ char toLower(char c){
 }
 
 int tamanho(char* s, int i){
-    if(s[i] != '\0'){
+    if(s[i] != '\0' && s[i] != '\n'){
         i = tamanho(s, i + 1);
     }
     return i;
 }
 
-
-int engual(char* s1, char* s2,int i, int resp){
-    if(s1[i] != '\0'){
+int engual(char* s1, char* s2, int i, int resp){
+    if(s1[i] != '\0' && s1[i] != '\n' && resp == 1){
         if(s1[i] != s2[i]){
             resp = 0;
         }
-        resp = engual(s1,s2,i + 1, resp);
+        resp = engual(s1, s2, i + 1, resp);
     }
     return resp;
 }
@@ -60,16 +59,18 @@ int numero(char* s1, int i, int resp){
 }
 
 int numeroReal(char* s1, int i, int resp){
-    if(s1[i] != '\0'){
+    if(s1[i] != '\0' && s1[i] != '\n' && resp != -1){
         char c = s1[i];
         if(c == '.' || c == ','){
-            resp = 1;
+            if(resp == 2){
+                resp = -1; 
+            } else {
+                resp = 2;
+            }
         } else if(!(c >= '0' && c <= '9')){
             resp = -1;
         }
-        if(resp != -1){
-            resp = numeroReal(s1, i + 1, resp);
-        }
+        resp = numeroReal(s1, i + 1, resp);
     }
     if(resp == -1){
         resp = 0;
@@ -77,21 +78,19 @@ int numeroReal(char* s1, int i, int resp){
     return resp;
 }
 
-
 int main(){
-    char* string = malloc(100 * sizeof(char));
-    int i = 0;
-    scanf(" %s", string);
+    char* string = malloc(500 * sizeof(char));
+    fgets(string, 500, stdin);
     while(!(tamanho(string, 0) == 3 && engual(string, "FIM", 0, 1))){
-        printf(vogais(string, 0, 1) ? "SIM " : "NAO ");
-        
-        printf(conso(string,0,1) ? "SIM " : "NAO ");
-       
-        printf(numero(string,0,1) ? "SIM " : "NAO ");
-
-        printf(numeroReal(string,0,0) ? "SIM " : "NAO ");
+        printf(vogais(string, 0, 1) ? "SIM" : "NAO");
+        printf(" ");
+        printf(conso(string, 0, 1) ? "SIM" : "NAO");
+        printf(" ");
+        printf(numero(string, 0, 1) ? "SIM" : "NAO");
+        printf(" ");
+        printf(numeroReal(string, 0, 1) ? "SIM" : "NAO");
         printf("\n");
-        scanf(" %s", string);
+        fgets(string, 500, stdin);
     }
     return 0;
 }

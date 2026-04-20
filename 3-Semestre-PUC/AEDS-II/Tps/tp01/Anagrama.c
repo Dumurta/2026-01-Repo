@@ -37,15 +37,15 @@ int verificaAna(char s1[], char s2[]){
 }
 
 int main(){
-    char s1[100], s2[100];
-    fgets(s1, 100, stdin);
-    while(!(s1[0] == 'F' && s1[1] == 'I' && s1[2] == 'M')){
-        fgets(s2, 100, stdin);
+    char linha[100], s1[50], s2[50];
+    fgets(linha, 100, stdin);
+    while(!(linha[0] == 'F' && linha[1] == 'I' && linha[2] == 'M')){
+         sscanf(linha, "%s %s", s1, s2);
         if(verificaAna(s1, s2) == 1)
             printf("SIM\n");
         else
             printf("NAO\n");
-        fgets(s1, 100, stdin);
+        fgets(linha, 100, stdin);
     }
     return 0;
 }
