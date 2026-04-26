@@ -1,0 +1,3 @@
+Prezado Theldo, 
+Devido ao adiantamento do prazo de entrega do Guia 06, não fui capaz de completar o guia e estou fazendo o envio dele sem as resoluções das questões 5 e 6, e também sem os códigos Verilog e os circuitos Logisim das questões que foram resolvidas.
+Sei que a próxima entrega provavelmente só irá abrir daqui a duas semanas (o que faria com que um envio tardio da parte faltante do guia fosse penalizado na regra de pontuações) mas, caso seja aceito, irei providenciar e enviar as resoluções junto ao Guia 07.

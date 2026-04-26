@@ -1,0 +1,118 @@
+GUIA 04 - ÁLGEBRA BOOLEANA
+Eduardo Murta De Abreu 884985
+
+1)
+1.a) x . (y' + z')'' = x . (y' + z')
+   x y z | (y'+z')' |(y'+z') + x | s
+   0 0 0 |    0     |   0        | 0
+   0 0 1 |    0     |   0        | 0
+   0 1 0 |    0     |   0        | 0
+   0 1 1 |    1     |   0        | 0
+   1 0 0 |    0     |   0        | 0
+   1 0 1 |    0     |   0        | 0
+   1 1 0 |    0     |   0        | 0
+   1 1 1 |    1     |   1        | 1
+   Sop = m7 = x . y . z
+
+1.b) (x' + y)' . z' = x . y' . z'
+1.c) (x . y)' . z  = x' . y . z + x' . y' . z + x . y . z
+1.d) (x . y')' . z' = x'. y'. z' + x'. y . z' + x . y . z'
+1.e) (x' + y) . (y' + z)' = x'.y.z' + x.y.z'
+
+2)
+a) x' . (x + y)' = x' . y'
+x' . x' . y'
+x' . y'
+b) ( x' + y ) + ( x' . y ) = x' + y
+c) ( x . y )' . ( x' + y ) = x'
+d) ( x' . y' )' + ( x + y )' = 1
+e) ( y' + x' + z ) . ( y + x + z' )' = ( y' + x' + z )
+
+3)
+a)x y z  |   mintermos  |   s
+   0 0 0 |   x' y' z'   |   0
+   0 0 1 |   x' y' z    |   1      
+   0 1 0 |   x' y z'    |   0        
+   0 1 1 |   x' y z     |   1        
+   1 0 0 |   x  y' z'   |   1        
+   1 0 1 |   x  y' z    |   0        
+   1 1 0 |   x  y  z'   |   1        
+   1 1 1 |   x  y  z    |   0
+SoP = x' y' z + x' y z + x  y' z' + x  y  z'
+
+b) 
+SoP = x' y' z + x' y z' + x y z' + x y z
+
+c)
+SoP = x'y'w'z + x'y'w z + x'y'w z + x'y w z' + x'y w z + x y' w z + x y w z
+
+d)
+Sop = x'y'w'z' + x'y'w z' + x'y w'z' + x'y w z' + x y' w z' + x y w'z' + x y w z'
+
+e)
+SOp = x'y'w'z' + x'y'w'z + x'y w z + x y' w'z + x y w z
+
+4)
+A)
+  |x y z| MAXTERMOS   | PoS
+0 |0 0 0| X + Y + Z   | 1
+1 |0 0 1| X + Y + Z'  | 0
+2 |0 1 0| X + Y' + Z  | 0
+3 |0 1 1| X + Y' + Z' | 0
+4 |1 0 0| X' + Y + Z' | 1
+5 |1 0 1| X' + Y + Z' | 1
+6 |1 1 0| X' + Y' + Z | 0
+7 |1 1 1| X' + Y' + Z'| 1
+
+PoS = (X + Y + Z') . (X + Y' + Z) . (X + Y' + Z') . (X' + Y' + Z)
+
+B)
+PoS = (X + Y + Z) . (X + Y' + Z) . (X + Y' + Z') . (X' + Y + Z')
+
+C)
+| x w y z |   MAXTERMOS      | S |
+| 0 0 0 0 | X + W + Y + Z  | 0 |
+| 0 0 0 1 | X + W + Y + Z' | 0 |
+| 0 0 1 0 | X + W + Y' + Z | 0 |
+| 0 0 1 1 | X + W + Y' + Z'| 1 |
+| 0 1 0 0 | X + W' + Y + Z | 1 |
+| 0 1 0 1 | X + W' + Y + Z'| 0 |
+| 0 1 1 0 | X + W' + Y' + Z| 0 |
+| 0 1 1 1 | X + W' + Y' + Z'| 0 |
+| 1 0 0 0 | X' + W + Y + Z | 1 |
+| 1 0 0 1 | X' + W + Y + Z'| 1 |
+| 1 0 1 0 | X' + W + Y' + Z| 1 |
+| 1 0 1 1 | X' + W + Y' + Z'| 0 |
+| 1 1 0 0 | X' + W' + Y + Z| 1 |
+| 1 1 0 1 | X' + W' + Y + Z'| 0 |
+| 1 1 1 0 | X' + W' + Y' + Z| 1 |
+| 1 1 1 1 | X' + W' + Y' + Z'| 1 |
+
+PoS = (X+W+Y+Z) . (X+W+Y+Z') . (X+W+Y'+Z) . (X+W'+Y+Z') . (X+W'+Y'+Z) . (X+W'+Y'+Z') . (X'+W+Y'+Z') . (X'+W'+Y+Z')
+
+D)
+PoS = (X+W+Y+Z') . (X+W+Y'+Z) . (X+W'+Y+Z) . (X+W'+Y+Z') . (X'+W+Y+Z) . (X'+W'+Y+Z) . (X'+W'+Y+Z')
+
+E)
+PoS = (X+W+Y+Z) . (X+W+Y+Z') . (X+W+Y'+Z) . (X+W+Y'+Z') . (X+W'+Y'+Z') . (X'+W+Y'+Z') . (X'+W'+Y'+Z')
+
+5)
+a)
+SoP = x' . y
+PoS = (X + Y) . (X' + Y) . (X' + Y')
+
+B)
+SoP = (x'. y') + (x' . y) + (x . y)
+PoS = (X' + Y)
+
+C)
+SoP = (x' . y' . z') + (x' . y' . z) + (x' . y . z) + (x y' z') + (x y z)
+PoS = (X + Y' + Z) . (X' + Y + Z') + (X' + Y' + Z)
+
+D)
+SoP = x'y'z' + x'y'z + x'yz' + xy'z' + xy'z + xyz'
+PoS = (x + y' + z') . (x' + y' + z')
+
+E)
+Sop = x'y'w'z' + x'y'w'z + x'yw'z + x'ywz' + xy'wz' + xy'wz + xywz
+poS = (x+y+w'+z) . (x+y+w'+z') . (x+y'+w+z) . (x+y'+w'+z') . (x'+y+w+z) . (x'+y+w+z') . (x'+y'+w+z) . (x'+y'+w+z') . (x'+y'+w'+z)

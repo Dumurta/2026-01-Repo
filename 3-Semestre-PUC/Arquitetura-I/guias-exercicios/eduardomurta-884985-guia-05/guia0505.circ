@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project source="2.16.2.2.jar" version="1.0">
+  This file is intended to be loaded by Logisim http://logisim.altervista.org
+
+  <lib desc="#Wiring" name="0"/>
+  <lib desc="#Gates" name="1"/>
+  <lib desc="#TTL" name="2"/>
+  <lib desc="#Plexers" name="3"/>
+  <lib desc="#Arithmetic" name="4"/>
+  <lib desc="#Memory" name="5"/>
+  <lib desc="#I/O" name="6"/>
+  <lib desc="#Base" name="7">
+    <tool name="Text Tool">
+      <a name="text" val=""/>
+      <a name="font" val="Dialog plain 12"/>
+      <a name="color" val="#000000"/>
+      <a name="halign" val="center"/>
+      <a name="valign" val="base"/>
+    </tool>
+  </lib>
+  <main name="main"/>
+  <options>
+    <a name="gateUndefined" val="ignore"/>
+    <a name="simlimit" val="1000"/>
+    <a name="simrand" val="0"/>
+  </options>
+  <mappings>
+    <tool lib="7" map="Button2" name="Poke Tool"/>
+    <tool lib="7" map="Button3" name="Menu Tool"/>
+    <tool lib="7" map="Ctrl Button1" name="Menu Tool"/>
+  </mappings>
+  <toolbar>
+    <tool lib="7" name="Poke Tool"/>
+    <tool lib="7" name="Edit Tool"/>
+    <sep/>
+    <tool lib="7" name="Text Tool">
+      <a name="text" val=""/>
+      <a name="font" val="Dialog plain 12"/>
+      <a name="color" val="#000000"/>
+      <a name="halign" val="center"/>
+      <a name="valign" val="base"/>
+    </tool>
+    <tool lib="0" name="Pin">
+      <a name="tristate" val="false"/>
+    </tool>
+    <tool lib="0" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+    </tool>
+    <tool lib="1" name="NOT Gate"/>
+    <tool lib="1" name="AND Gate"/>
+    <tool lib="1" name="OR Gate"/>
+  </toolbar>
+  <circuit name="main">
+    <a name="circuit" val="main"/>
+    <a name="clabel" val=""/>
+    <a name="clabelup" val="east"/>
+    <a name="clabelfont" val="Dialog plain 12"/>
+    <a name="clabelcolor" val="#000000"/>
+    <wire from="(90,110)" to="(120,110)"/>
+    <wire from="(90,80)" to="(90,110)"/>
+    <wire from="(90,130)" to="(120,130)"/>
+    <wire from="(90,130)" to="(90,170)"/>
+    <wire from="(160,100)" to="(190,100)"/>
+    <wire from="(160,100)" to="(160,120)"/>
+    <wire from="(90,80)" to="(190,80)"/>
+    <wire from="(160,150)" to="(190,150)"/>
+    <wire from="(160,120)" to="(160,150)"/>
+    <wire from="(90,170)" to="(190,170)"/>
+    <wire from="(230,130)" to="(230,160)"/>
+    <wire from="(230,130)" to="(250,130)"/>
+    <wire from="(230,90)" to="(230,110)"/>
+    <wire from="(230,110)" to="(250,110)"/>
+    <wire from="(290,120)" to="(320,120)"/>
+    <wire from="(320,110)" to="(320,120)"/>
+    <wire from="(320,110)" to="(330,110)"/>
+    <wire from="(320,130)" to="(330,130)"/>
+    <wire from="(320,120)" to="(320,130)"/>
+    <wire from="(370,120)" to="(400,120)"/>
+    <comp lib="1" loc="(290,120)" name="NAND Gate">
+      <a name="label" val="q"/>
+    </comp>
+    <comp lib="1" loc="(160,120)" name="NAND Gate">
+      <a name="label" val="wa"/>
+    </comp>
+    <comp lib="0" loc="(90,80)" name="Pin">
+      <a name="tristate" val="false"/>
+      <a name="label" val="a"/>
+    </comp>
+    <comp lib="1" loc="(230,90)" name="NAND Gate">
+      <a name="label" val="wb"/>
+    </comp>
+    <comp lib="0" loc="(90,170)" name="Pin">
+      <a name="tristate" val="false"/>
+      <a name="label" val="b"/>
+    </comp>
+    <comp lib="1" loc="(370,120)" name="NAND Gate"/>
+    <comp lib="0" loc="(400,120)" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="label" val="s"/>
+    </comp>
+    <comp lib="1" loc="(230,160)" name="NAND Gate">
+      <a name="label" val="w3"/>
+    </comp>
+  </circuit>
+</project>
