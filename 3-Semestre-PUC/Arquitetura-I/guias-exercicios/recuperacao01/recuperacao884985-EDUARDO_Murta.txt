@@ -1,0 +1,228 @@
+================================================================================
+RECUPERAÇÃO 01 - ARQUITETURA DE COMPUTADORES I
+ARQ1 - Tema: Sistemas de Numeração e circuitos combinatórios
+Aluno: Eduardo Murta (884985)
+================================================================================
+
+EXERCÍCIO 01 - Análise do Mapa de Veitch-Karnaugh
+================================================================================
+
+Tabela de Verdade (valores com f(a,b,c,d) = 1):
+Mintermos: 3, 4, 6, 7, 9, B, C
+
+a.) EXPRESSÃO CANÔNICA SoP (SUM OF PRODUCTS):
+    f(a,b,c,d) = m3 + m4 + m6 + m7 + m9 + mB + mC
+    = a'b'cd + a'bc'd' + a'bcd' + a'bcd + ab'c'd + ab'cd + abc'd'
+    
+b.) EXPRESSÃO CANÔNICA PoS (PRODUCT OF SUMS):
+    MAXTERMOS: 0, 1, 2, 5, 8, A, D, E, F
+    f(a,b,c,d) = M0·M1·M2·M5·M8·MA·MD·ME·MF
+    = (a+b+c+d)·(a+b+c+d')·(a+b+c'+d)·(a+b'+c+d')·
+      (a'+b+c+d)·(a'+b+c'+d)·(a'+b'+c+d')·(a'+b'+c'+d)·(a'+b'+c'+d')
+
+c.) SIMPLIFICAÇÃO DE MINTERMOS (Mapa de Karnaugh):
+    Agrupamentos principais:
+    - Grupo 1 (3,7): a'cd (2 variáveis)
+    - Grupo 2 (6,7): a'bd (2 variáveis)
+    - Grupo 3 (4,6): a'bc' (necessário para cobertura)
+    - Grupo 4 (9,B): ab'cd (2 variáveis)
+    - Grupo 5 (C): abc'd' (1 termo isolado)
+    
+    Expressão Simplificada SoP:
+    f(a,b,c,d) = a'cd + a'bd + a'bc' + ab'cd + abc'd'
+    OU (agrupamento otimizado):
+    f(a,b,c,d) = a'cd + ab'cd + abc'd' + a'b(c'd' + cd)
+    
+d.) SIMPLIFICAÇÃO DE MAXTERMOS:
+    MAXTERMOS: 0, 1, 2, 5, 8, A, D, E, F
+    Agrupamentos:
+    - (0,1,2,3) → a'+b'+c' (não, pois 3 = 1)
+    - (0,1,8,9) → c'+d' (não está no grupo)
+    
+    Expressão Simplificada PoS:
+    f(a,b,c,d) = (a+b+c+d)·(a+b+c'+d)·(a'+b+c+d)·(a'+b'+c+d')
+
+e.) SoP EQUIVALENTE COM PORTAS NAND:
+    Usando Dupla Negação: f = f'' (De Morgan)
+    Partindo de: f = a'cd + ab'cd + abc'd' + a'bd
+    
+    Aplicando negação dupla:
+    f = NAND(NAND(a'cd), NAND(ab'cd), NAND(abc'd'), NAND(a'bd))
+    
+    Convertendo cada termo para NAND:
+    - a'cd = NAND(NAND(a,a), c, d)
+    - ab'cd = NAND(a, NAND(b,b), c, d)
+    - abc'd' = NAND(a, b, NAND(c,c), NAND(d,d))
+    - a'bd = NAND(NAND(a,a), b, d)
+
+f.) PoS EQUIVALENTE COM PORTAS NOR:
+    Usando Dupla Negação: f = f'' (De Morgan)
+    Partindo de: f = (a+b+c+d)·(a+b+c'+d)·(a'+b+c+d)·(a'+b'+c+d')
+    
+    Convertendo para NOR:
+    - (a+b+c+d) = NOR(NOR(a,b), NOR(c,d))
+    - (a+b+c'+d) = NOR(NOR(a,b), NOR(c',d))
+    - (a'+b+c+d) = NOR(NOR(a',b), NOR(c,d))
+    - (a'+b'+c+d') = NOR(NOR(a',b'), NOR(c,d'))
+
+================================================================================
+EXERCÍCIO 02 - Implementações em Verilog e Logisim
+================================================================================
+
+a.) EXPRESSÃO ORIGINAL:
+    s = a AND (NOT c OR b) = a·(b + c')
+
+    Tabela Verdade:
+    a | b | c | s
+    --+---+---+---
+    0 | 0 | 0 | 0
+    0 | 0 | 1 | 0
+    0 | 1 | 0 | 0
+    0 | 1 | 1 | 0
+    1 | 0 | 0 | 1
+    1 | 0 | 1 | 0
+    1 | 1 | 0 | 1
+    1 | 1 | 1 | 1
+
+b.) SoP SIMPLIFICADA COM PORTAS NAND:
+    f(a,b,c) = a(b + c') = ab + ac'
+    
+    Com NAND (usando dupla negação):
+    f = NAND(NAND(a,b), NAND(a,c'))
+    OU
+    f = NAND(NAND(a,b), NAND(a,NAND(c,c)))
+
+c.) PoS SIMPLIFICADA:
+    f(a,b,c) = a(b + c')
+    Já está em forma PoS parcial
+    = (a)(b + c')
+    = (a)(b + c')
+
+d.) MUX EQUIVALENTE:
+    mux(mux(0,mux(0,a,b),c), 1, mux(0,mux(0,a',b'),c'))
+    
+    Análise:
+    - Primeiro mux interno à esquerda: mux(0,a,b) = a (seleciona linha 0)
+    - Segundo: mux(0, a, c) = a (seleciona linha 0)
+    - Terceiro: mux(0, a', b') = a' (seleciona linha 0)
+    - Quarto: mux(0, a', c') = a' (seleciona linha 0)
+    - Último: mux(a, 1, a') = (NOT a)·1 + a·a' = a (quando a=1, saída=1; quando a=0, saída=0)
+
+================================================================================
+EXERCÍCIO 03 - Expressão NAND Complexa
+================================================================================
+
+Expressão: nand(nand(nand(a,a),c), nand(nand(a,a),b), nand(nand(b,b),c))
+
+Simplificando:
+- nand(a,a) = NOT a = a'
+- nand(a,a) = NOT a = a'
+- nand(b,b) = NOT b = b'
+
+Portanto:
+f = nand(nand(a',c), nand(a',b), nand(b',c))
+  = nand((a'c)', (a'b)', (b'c)')
+  = nand(a+c', a+b', b+c')
+
+Aplicando NAND ao resultado:
+f = NOT((a+c')·(a+b')·(b+c'))
+  = (a+c')'+(a+b')'+(b+c')'  [De Morgan]
+  = (a'c)+(a'b)+(b'c)
+
+Tabela Verdade:
+a | b | c | f
+--+---+---+---
+0 | 0 | 0 | 0
+0 | 0 | 1 | 1
+0 | 1 | 0 | 1
+0 | 1 | 1 | 1
+1 | 0 | 0 | 0
+1 | 0 | 1 | 1
+1 | 1 | 0 | 0
+1 | 1 | 1 | 0
+
+================================================================================
+EXERCÍCIO 04 - Expressão Quine-McCluskey
+================================================================================
+
+Expressão: 0_0 + _10 + 1_1
+Onde _ representa "don't care" (não importa)
+
+Substituindo _ por variáveis a, b, c, d:
+- 0_0 pode ser: 0000, 0100
+- _10 pode ser: 0100, 1100
+- 1_1 pode ser: 1010, 1110
+
+Mintermos: 0, 4, 5, 12, 10, 14
+
+Simplificação Quine-McCluskey:
+- Agrupamento 1: {0, 4} → 0_00 (prime implicant: c'd')
+- Agrupamento 2: {4, 12} → _100 (prime implicant: bd')
+- Agrupamento 3: {10, 14} → 1_10 (prime implicant: ac)
+- Termo isolado: {5} → 0101
+
+Expressão SoP Equivalente:
+f = c'd' + bd' + ac + a'b'cd
+
+================================================================================
+EXERCÍCIO 05 - Cálculos de Sistemas de Numeração
+================================================================================
+
+a.) FADABACA(16) / 100(4)
+
+    Convertendo FADABACA(16) para decimal:
+    = F×16⁷ + A×16⁶ + D×16⁵ + A×16⁴ + B×16³ + A×16² + C×16¹ + A×16⁰
+    = 15×268435456 + 10×16777216 + 13×1048576 + 10×65536 + 11×4096 + 10×256 + 12×16 + 10
+    = 4026531840 + 167772160 + 13631488 + 655360 + 45056 + 2560 + 192 + 10
+    = 4208638666(10)
+    
+    Convertendo 100(4) para decimal:
+    = 1×4² + 0×4¹ + 0×4⁰ = 16(10)
+    
+    Divisão:
+    4208638666 ÷ 16 = 263039916,625 = 263039916(10)
+    
+    Convertendo para hexadecimal:
+    263039916(10) = FA4A5AC(16)
+    
+    Resposta: FA4A5AC(16)
+
+b.) QUOCIENTE E RESTO DE 345(8) ÷ 23(4)
+
+    Convertendo 345(8) para decimal:
+    = 3×8² + 4×8¹ + 5×8⁰ = 192 + 32 + 5 = 229(10)
+    
+    Convertendo 23(4) para decimal:
+    = 2×4¹ + 3×4⁰ = 8 + 3 = 11(10)
+    
+    Divisão:
+    229 ÷ 11 = 20 com resto 9
+    
+    Verificação: 11 × 20 + 9 = 220 + 9 = 229 ✓
+    
+    Convertendo respostas:
+    - Quociente: 20(10) = 24(8) = 110(4)
+    - Resto: 9(10) = 11(8) = 21(4)
+    
+    Resposta: Quociente = 24(8) [ou 110(4)], Resto = 11(8) [ou 21(4)]
+
+c.) C4(16) - 123(4) EM UM BYTE
+
+    Convertendo C4(16) para decimal:
+    = 12×16¹ + 4×16⁰ = 192 + 4 = 196(10)
+    
+    Convertendo 123(4) para decimal:
+    = 1×4² + 2×4¹ + 3×4⁰ = 16 + 8 + 3 = 27(10)
+    
+    Subtração:
+    196 - 27 = 169(10)
+    
+    Convertendo para hexadecimal (byte):
+    169(10) = A9(16)
+    
+    Em binário (8 bits):
+    169(10) = 10101001(2)
+    
+    Resposta: A9(16) ou 10101001(2)
+
+================================================================================
