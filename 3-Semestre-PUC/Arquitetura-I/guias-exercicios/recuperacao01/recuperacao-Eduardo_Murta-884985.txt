@@ -1,0 +1,24 @@
+Recuperação  01 Eduardo Murta De Abreu
+
+01)
+ab/cd 00 01 11 10
+ 00   0  0  1  0
+ 01   1  0  1  1
+ 11   1  0  0  0
+ 10   0  1  1  0
+a)m(3,4,6,7,9,11,12)
+SoP=(a'b'cd)+(a'bc'd')+(a'bcd')+(a'bcd)+(ab'c'd)+(ab'cd)+(abc'd')
+b)M(0,1,2,5,8,10,13,14,15)
+PoS=∏M(3,4,6,7,9,11,12)
+F=(a+c'+d')⋅(a+b'+c)⋅(a'+b'+d')⋅(a'+b'+c+d)
+
+
+
+
+
+
+
+c)SoP=(c⋅d)+(a'bd')+(bc'd')+(ab'd)
+
+
+d)PoS=(A+B+C)⋅(A+C+D')⋅(A'+B'+D')⋅(A'+C'+D)⋅(A'+B+D)
