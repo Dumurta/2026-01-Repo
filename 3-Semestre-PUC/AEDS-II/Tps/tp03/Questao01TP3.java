@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -311,9 +312,8 @@ public class Questao01TP3 {
         Scanner sc = new Scanner(System.in);
         Restaurante[] selecionados = new Restaurante[colecao.getTamanho()];
         int n = 0;
-        while (sc.hasNextInt()) {
-            int id = sc.nextInt();
-            if (id == -1) { break; }
+        int id = sc.nextInt();
+        while (id != -1) {
             int i = 0;
             boolean encontrado = false;
             while (i < colecao.getTamanho() && !encontrado) {
@@ -324,6 +324,7 @@ public class Questao01TP3 {
                 }
                 i++;
             }
+            id = sc.nextInt();
         }
         sc.close();
 
@@ -338,7 +339,7 @@ public class Questao01TP3 {
             i++;
         }
 
-        java.io.FileWriter fw = new java.io.FileWriter("884985_selecao_parcial.txt");
+        FileWriter fw = new FileWriter("884985_selecao_parcial.txt");
         fw.write("884985\t" + comparacoes + "\t" + movimentacoes + "\t" + String.format(Locale.US, "%.2f", tempo) + "\n");
         fw.close();
     }

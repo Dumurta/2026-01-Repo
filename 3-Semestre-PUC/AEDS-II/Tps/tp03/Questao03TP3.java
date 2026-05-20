@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -228,10 +229,10 @@ public class Questao03TP3 {
         return resp;
     }
 
-    public static void quicksortParcial(Restaurante3[] v, int esq, int dir, int k) {
+    private static int[] particionar(Restaurante3[] v, int esq, int dir) {
+        Restaurante3 pivo = v[(esq + dir) / 2];
         int i = esq;
         int j = dir;
-        Restaurante3 pivo = v[(esq + dir) / 2];
         while (i <= j) {
             while (comparar(v[i], pivo) < 0) { comparacoes++; i++; }
             while (comparar(v[j], pivo) > 0) { comparacoes++; j--; }
@@ -244,8 +245,21 @@ public class Questao03TP3 {
                 j--;
             }
         }
-        if (esq < j) { quicksortParcial(v, esq, j, k); }
-        if (i < dir && i < k) { quicksortParcial(v, i, dir, k); }
+        return new int[]{i, j};
+    }
+
+    public static void quicksortParcial(Restaurante3[] v,int n, int k) {
+        quicksortParcialAux(v, 0, n - 1, k);
+    }
+
+    private static void quicksortParcialAux(Restaurante3[] v, int esq, int dir, int k) {
+        if (esq < dir) {
+            int[] limites = particionar(v, esq, dir);
+            int i = limites[0];
+            int j = limites[1];
+            if (esq < j) { quicksortParcialAux(v, esq, j, k); }
+            if (i < dir && i < k) { quicksortParcialAux(v, i, dir, k); }
+        }
     }
 
     public static void main(String[] args) throws Exception {
@@ -268,7 +282,7 @@ public class Questao03TP3 {
         sc.close();
 
         long inicio = System.currentTimeMillis();
-        quicksortParcial(sel, 0, n - 1, 10);
+        quicksortParcial(sel, n, 10);
         long fim = System.currentTimeMillis();
         double tempo = (fim - inicio) / 1000.0;
 
@@ -278,7 +292,7 @@ public class Questao03TP3 {
             i++;
         }
 
-        java.io.FileWriter fw = new java.io.FileWriter("884985_quicksort_parcial.txt");
+        FileWriter fw = new FileWriter("884985_quicksort_parcial.txt");
         fw.write("884985\t" + comparacoes + "\t" + movimentacoes + "\t" + String.format(Locale.US, "%.2f", tempo) + "\n");
         fw.close();
     }

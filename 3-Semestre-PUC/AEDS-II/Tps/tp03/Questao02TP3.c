@@ -8,7 +8,7 @@
 #define MAX_TEXTO 256
 #define MAX_TIPOS_COZINHA 10
 #define MAX_REGISTROS 600
-#define PATH_CSV "tmp/restaurantes.csv"
+#define PATH_CSV "/tmp/restaurantes.csv"
 
 int texto_tamanho(char *s)
 {

@@ -8,7 +8,7 @@
 #define MAX_TEXTO 256
 #define MAX_TIPOS_COZINHA 10
 #define MAX_REGISTROS 600
-#define PATH_CSV "tmp/restaurantes.csv"
+#define PATH_CSV "/tmp/restaurantes.csv"
 
 int texto_tamanho(char *s)
 {
@@ -315,7 +315,7 @@ int comparar_restaurante(Restaurante *a, Restaurante *b)
     return resp;
 }
 
-void heapify(Restaurante **v, int n, int i, long *comp, long *mov)
+static void heapify_aux(Restaurante **v, int n, int i, long *comp, long *mov)
 {
     int maior = i;
     int esq = 2 * i + 1;
@@ -343,8 +343,13 @@ void heapify(Restaurante **v, int n, int i, long *comp, long *mov)
         v[i] = v[maior];
         v[maior] = temp;
         *mov += 3;
-        heapify(v, n, maior, comp, mov);
+        heapify_aux(v, n, maior, comp, mov);
     }
+}
+
+void heapify(Restaurante **v, int n, int i, long *comp, long *mov)
+{
+    heapify_aux(v, n, i, comp, mov);
 }
 
 void heapsort_parcial(Restaurante **v, int n, int k, long *comp, long *mov)
