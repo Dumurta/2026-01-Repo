@@ -1,0 +1,110 @@
+Recuperacao_02.txt
+884985 - Eduardo Murta de Abreu
+
+ARQ1 - Recuperacao 02
+
+Estado atual: a, b   | Entrada: c   | Proximo estado: a', b'  | Saida: s
+
+m | a b c | a' b' s
+0 | 0 0 0 | 0  0  0
+1 | 0 0 1 | 0  1  0
+2 | 0 1 0 | 1  0  0
+3 | 0 1 1 | 0  0  0
+4 | 1 0 0 | 1  0  0
+5 | 1 0 1 | 1  1  1
+6 | 1 1 0 | 0  0  0
+7 | 1 1 1 | 0  1  0
+
+
+Da = a'
+Db = b'
+Sa/Ra: baseado na transicao de a -> a' (0->0:S=0,R=x | 0->1:S=1,R=0 | 1->0:S=0,R=1 | 1->1:S=x,R=0)
+Sb/Rb: idem para b -> b'
+Ta = a XOR a'
+Tb = b XOR b'
+
+m | a b c | a' b' | Da Db | Sa Ra | Sb Rb | Ta Tb
+0 | 0 0 0 | 0  0  | 0  0  | 0  x  | 0  x  | 0  0
+1 | 0 0 1 | 0  1  | 0  1  | 0  x  | 1  0  | 0  1
+2 | 0 1 0 | 1  0  | 1  0  | 1  0  | 0  1  | 1  1
+3 | 0 1 1 | 0  0  | 0  0  | 0  x  | 0  1  | 0  1
+4 | 1 0 0 | 1  0  | 1  0  | x  0  | 0  x  | 0  0
+5 | 1 0 1 | 1  1  | 1  1  | x  0  | 1  0  | 0  1
+6 | 1 1 0 | 0  0  | 0  0  | 0  1  | 0  1  | 1  1
+7 | 1 1 1 | 0  1  | 0  1  | 0  1  | x  0  | 1  0
+
+
+01.)
+
+--- Da ---
+       c=0   c=1
+ ab=00  0     0
+ ab=01  1     0
+ ab=11  0     0
+ ab=10  1     1
+
+--- Sa ---                        --- Ra ---
+       c=0   c=1                         c=0   c=1
+ ab=00  0     0                 ab=00  x     x
+ ab=01  1     0                 ab=01  0     x
+ ab=11  0     0                 ab=11  1     1
+ ab=10  x     x                 ab=10  0     0
+
+--- Ta ---
+       c=0   c=1
+ ab=00  0     0
+ ab=01  1     1
+ ab=11  1     1
+ ab=10  0     0
+
+--- Db ---
+       c=0   c=1
+ ab=00  0     1
+ ab=01  0     0
+ ab=11  0     1
+ ab=10  0     1
+
+--- Sb ---                        --- Rb ---
+       c=0   c=1                         c=0   c=1
+ ab=00  0     1                 ab=00  x     0
+ ab=01  0     0                 ab=01  x     1
+ ab=11  0     x                 ab=11  1     0
+ ab=10  0     1                 ab=10  x     0
+
+--- Tb ---
+       c=0   c=1
+ ab=00  0     1
+ ab=01  1     1
+ ab=11  1     0
+ ab=10  0     1
+
+
+02.)
+
+a.) SoP (Da) = a.b' + a'.b.c'
+     (grupo {m4,m5} = a.b')
+
+b.) SoP (Sa) = a'.b.c'
+     (apenas {m2})
+
+     SoP (Ra) = a.b
+     (grupo {m6,m7} = a.b)
+
+c.) SoP (Ta) = a.b + a'.b.c'
+     (grupo {m6,m7} = a.b)
+
+
+03.)
+
+a.) SoP (Db) = b'.c + a.b.c
+     (grupo {m1,m5} = b'.c)
+
+b.) SoP (Sb) = b'.c + a.c
+     (grupo {m1,m5} = b'.c)
+
+     SoP (Rb) = a'.b + a.c'
+     (grupo {m2,m3} = a'.b)
+      grupo {m4,m6} = a.c')
+
+c.) SoP (Tb) = a'.b + b'.c + a.b.c'
+     (grupo {m2,m3} = a'.b)

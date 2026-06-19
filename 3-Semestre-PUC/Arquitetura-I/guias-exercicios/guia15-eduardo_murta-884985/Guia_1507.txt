@@ -1,0 +1,36 @@
+// Guia_1507.txt
+// Eduardo Murta de Abreu - 884985
+//
+// dado03 = dado01 % 4 + dado02 / 2 (8 bits)
+// Nota: divisão por 2 via loop de subtração, conforme orientação do enunciado
+//       (evitar rotações para não ter problema com o bit de sinal/carry).
+
+// Área de Código
+    // Calcular dado01 % 4 (resto da divisão por 4)
+    LDA dado01       // A = dado01
+    ANI 03h          // A = A AND 03h (isola os 2 bits menos significativos)
+    MOV B, A         // B = dado01 % 4
+
+    // Calcular dado02 / 2 via loop de subtração
+    LDA dado02       // A = dado02
+    MVI C, 00h       // C = quociente = 0
+DIV2:
+    CPI 02h          // A < 2 ?
+    JC  FIM_DIV      // se sim, termina
+    SUI 02h          // A = A - 2
+    INR C            // C++ (quociente)
+    JMP DIV2
+FIM_DIV:
+    // C = dado02 / 2
+
+    // Somar resultados
+    MOV A, B         // A = dado01 % 4
+    ADD C            // A = (dado01 % 4) + (dado02 / 2)
+    STA dado03       // [dado03] = resultado
+
+    HLT
+
+// Área de Dados
+dado01: db 07h       // Exemplo: 7
+dado02: db 0Ah       // Exemplo: 10
+dado03: db 00h       // Resultado: 7%4 + 10/2 = 3 + 5 = 8 (08h)

@@ -1,0 +1,110 @@
+Eduardo Murta De Abreu 884985
+ARQ1 - Preparação 02
+
+
+Questão 01 - Expressões canônicas por MINTERMOS (SoP)
+
+
+a) SoP (Da) = a'bc + ab'c' + abc' + abc
+   SoP (Db) = a'b'c + a'bc' + a'bc + ab'c' + ab'c + abc' + abc
+
+b) SoP (Ja) = a'bc
+   SoP (Jb) = a'b'c
+
+   SoP (Ka) = ab'c
+   SoP (Kb) = abc
+
+c) SoP (Ta) = a'bc + ab'c
+   SoP (Tb) = a'b'c + abc
+
+
+Questão 02 - Expressões canônicas por MAXTERMOS (PoS)
+
+
+a) PoS (Da) = (A+B+C).(A+B+C').(A+B'+C).(A'+B+C)
+   PoS (Db) = (A+B+C).(A+B+C').(A'+B'+C).(A'+B'+C')
+
+b) PoS (Ja) = (A+B+C).(A+B+C').(A+B'+C).(A'+B+C).(A'+B'+C).(A'+B'+C')
+   PoS (Jb) = (A+B+C).(A+B+C').(A+B'+C).(A'+B+C).(A'+B'+C).(A'+B'+C')
+
+   PoS (Ka) = (A+B'+C).(A'+B'+C')
+   PoS (Kb) = (A+B+C).(A'+B'+C')
+
+c) PoS (Ta) = (A+B+C).(A+B+C').(A+B'+C').(A'+B'+C')
+   PoS (Tb) = (A'+B'+C).(A+B+C').(A+B+C).(A'+B+C).(A'+B'+C).(A'+B'+C')
+
+
+Questão 03 - Mapas de Karnaugh e expressões SoP simplificadas
+
+
+--- DA ---
+ab\c |  0  |  1
+  00 |  0  |  0
+  01 |  0  |  1
+  11 |  1  |  1
+  10 |  1  |  0
+
+SoP simplificada (Da) = ab + ac'
+
+--- SA ---
+ab\c |  0  |  1
+  00 |  0  |  0
+  01 |  0  |  1
+  11 |  X  |  X
+  10 |  X  |  0
+
+SoP simplificada (Sa) = a'bc
+
+--- RA ---
+ab\c |  0  |  1
+  00 |  X  |  X
+  01 |  X  |  0
+  11 |  0  |  0
+  10 |  0  |  1
+
+SoP simplificada (Ra) = abc
+
+--- TA ---
+ab\c |  0  |  1
+  00 |  0  |  0
+  01 |  0  |  1
+  11 |  0  |  0
+  10 |  0  |  1
+
+SoP simplificada (Ta) = a'bc + ab'c
+
+--- SB ---
+ab\c |  0  |  1
+  00 |  0  |  1
+  01 |  X  |  X
+  11 |  X  |  0
+  10 |  0  |  0
+
+SoP simplificada (Sb) = a'b'c
+
+--- RB ---
+ab\c |  0  |  1
+  00 |  X  |  0
+  01 |  0  |  0
+  11 |  0  |  1
+  10 |  X  |  X
+
+SoP simplificada (Rb) = abc
+
+--- JB ---
+ab\c |  0  |  1
+  00 |  0  |  1
+  01 |  X  |  X
+  11 |  X  |  X
+  10 |  0  |  0
+
+SoP simplificada (Jb) = a'b'c
+
+--- KB ---
+ab\c |  0  |  1
+  00 |  X  |  X
+  01 |  0  |  0
+  11 |  0  |  1
+  10 |  X  |  X
+
+SoP simplificada (Kb) = abc

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project source="2.16.2.2.jar" version="1.0">
+  This file is intended to be loaded by Logisim http://logisim.altervista.org
+
+  <lib desc="#Wiring" name="0">
+    <tool name="Pin">
+      <a name="facing" val="south"/>
+    </tool>
+  </lib>
+  <lib desc="#Gates" name="1"/>
+  <lib desc="#Memory" name="2">
+    <tool name="ROM">
+      <a name="contents">addr/data: 8 8
+0
+</a>
+    </tool>
+  </lib>
+  <lib desc="#Base" name="3">
+    <tool name="Text Tool">
+      <a name="text" val=""/>
+      <a name="font" val="Dialog plain 12"/>
+      <a name="color" val="#000000"/>
+      <a name="halign" val="center"/>
+      <a name="valign" val="base"/>
+    </tool>
+  </lib>
+  <main name="main"/>
+  <options>
+    <a name="gateUndefined" val="ignore"/>
+    <a name="simlimit" val="1000"/>
+    <a name="simrand" val="0"/>
+  </options>
+  <mappings>
+    <tool lib="3" map="Button2" name="Menu Tool"/>
+    <tool lib="3" map="Ctrl Button1" name="Menu Tool"/>
+    <tool lib="3" map="Button3" name="Menu Tool"/>
+  </mappings>
+  <toolbar>
+    <tool lib="3" name="Poke Tool"/>
+    <tool lib="3" name="Edit Tool"/>
+    <tool lib="0" name="Pin"/>
+    <tool lib="0" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="labelloc" val="east"/>
+    </tool>
+    <tool lib="1" name="NOT Gate"/>
+    <tool lib="0" name="Clock"/>
+  </toolbar>
+  <circuit name="main">
+    <a name="circuit" val="main"/>
+    <a name="clabel" val=""/>
+    <a name="clabelup" val="east"/>
+    <a name="clabelfont" val="SansSerif plain 12"/>
+    <a name="clabelcolor" val="#000000"/>
+    <wire from="(700,110)" to="(700,120)"/>
+    <wire from="(680,120)" to="(700,120)"/>
+    <wire from="(480,110)" to="(480,120)"/>
+    <wire from="(240,100)" to="(260,100)"/>
+    <wire from="(240,120)" to="(260,120)"/>
+    <wire from="(480,120)" to="(480,150)"/>
+    <wire from="(100,400)" to="(170,400)"/>
+    <wire from="(270,160)" to="(270,400)"/>
+    <wire from="(190,400)" to="(270,400)"/>
+    <wire from="(490,160)" to="(490,400)"/>
+    <wire from="(270,400)" to="(490,400)"/>
+    <wire from="(490,400)" to="(710,400)"/>
+    <wire from="(440,120)" to="(460,120)"/>
+    <wire from="(460,120)" to="(480,120)"/>
+    <wire from="(460,100)" to="(480,100)"/>
+    <wire from="(660,120)" to="(660,210)"/>
+    <wire from="(660,120)" to="(680,120)"/>
+    <wire from="(660,210)" to="(680,210)"/>
+    <wire from="(440,120)" to="(440,210)"/>
+    <wire from="(460,140)" to="(460,210)"/>
+    <wire from="(440,210)" to="(460,210)"/>
+    <wire from="(460,210)" to="(660,210)"/>
+    <wire from="(230,120)" to="(240,120)"/>
+    <wire from="(230,120)" to="(230,210)"/>
+    <wire from="(160,210)" to="(230,210)"/>
+    <wire from="(240,140)" to="(240,210)"/>
+    <wire from="(230,210)" to="(240,210)"/>
+    <wire from="(240,210)" to="(440,210)"/>
+    <wire from="(180,100)" to="(240,100)"/>
+    <wire from="(430,100)" to="(430,140)"/>
+    <wire from="(430,100)" to="(460,100)"/>
+    <wire from="(650,100)" to="(650,140)"/>
+    <wire from="(350,350)" to="(370,350)"/>
+    <wire from="(320,350)" to="(320,360)"/>
+    <wire from="(320,360)" to="(550,360)"/>
+    <wire from="(290,350)" to="(290,370)"/>
+    <wire from="(300,140)" to="(430,140)"/>
+    <wire from="(300,100)" to="(370,100)"/>
+    <wire from="(370,100)" to="(370,350)"/>
+    <wire from="(520,140)" to="(650,140)"/>
+    <wire from="(550,100)" to="(550,360)"/>
+    <wire from="(520,100)" to="(550,100)"/>
+    <wire from="(290,370)" to="(760,370)"/>
+    <wire from="(760,100)" to="(760,370)"/>
+    <wire from="(680,100)" to="(700,100)"/>
+    <wire from="(740,100)" to="(760,100)"/>
+    <wire from="(710,160)" to="(710,400)"/>
+    <wire from="(650,100)" to="(680,100)"/>
+    <wire from="(680,140)" to="(680,210)"/>
+    <comp lib="1" loc="(190,400)" name="NOT Gate"/>
+    <comp lib="0" loc="(290,350)" name="Pin">
+      <a name="facing" val="south"/>
+      <a name="output" val="true"/>
+      <a name="label" val="Q3"/>
+    </comp>
+    <comp lib="0" loc="(350,350)" name="Pin">
+      <a name="facing" val="south"/>
+      <a name="output" val="true"/>
+      <a name="label" val="Q1"/>
+    </comp>
+    <comp lib="0" loc="(100,400)" name="Pin">
+      <a name="label" val="CLR'"/>
+    </comp>
+    <comp lib="3" loc="(250,20)" name="Text">
+      <a name="text" val="04 - Contador Assincrono crescente"/>
+      <a name="font" val="SansSerif bold 16"/>
+    </comp>
+    <comp lib="2" loc="(740,100)" name="J-K Flip-Flop">
+      <a name="label" val="FF3"/>
+    </comp>
+    <comp lib="2" loc="(520,100)" name="J-K Flip-Flop">
+      <a name="label" val="FF2"/>
+    </comp>
+    <comp lib="0" loc="(180,100)" name="Clock"/>
+    <comp lib="0" loc="(320,350)" name="Pin">
+      <a name="facing" val="south"/>
+      <a name="output" val="true"/>
+      <a name="label" val="Q2"/>
+    </comp>
+    <comp lib="0" loc="(160,210)" name="Pin"/>
+    <comp lib="2" loc="(300,100)" name="J-K Flip-Flop">
+      <a name="label" val="FF1"/>
+    </comp>
+  </circuit>
+</project>

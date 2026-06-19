@@ -1,0 +1,59 @@
+// Guia_1603.txt
+// 884985 - Eduardo Murta de Abreu
+//
+// Resto inteiro de dois números de 8 bits usando subtrações sucessivas (IMOD)
+// Armazenar dividendo em 0050h
+// Armazenar divisor em 0051h
+// Resultado (resto) armazenado em 0052h
+//
+// F_MOD - Função IMOD   // A = mod(B, C)
+// @return A              // resto inteiro
+// @param  B              // dividendo
+// @param  C              // divisor
+
+    JMP MAIN       // Pula para MAIN, evitando área de funções
+
+// FUNÇÃO RESTO (F_MOD)
+// Estratégia: subtrair o divisor do dividendo repetidamente;
+//             o que sobrar quando não couber mais é o resto
+F_MOD:
+    MOV D, B       // D = B  --> cópia do dividendo (resto parcial)
+    MOV E, C       // E = C  --> guarda divisor (C pode ser alterado)
+
+    // Verificar divisão por zero: se divisor = 0, resto = dividendo
+    MOV A, E       // A = divisor
+    CPI 00h        // divisor == 0?
+    JZ DIV_ZERO    // se sim, retorna dividendo como resto
+
+    MOV A, D       // A = dividendo (inicia acumulação do resto)
+
+MOD_LOOP:
+    CMP E          // A < divisor?
+    JC FIM_MOD     // se sim (Carry=1), A é o resto; termina
+    SUB E          // A = A - divisor
+    JMP MOD_LOOP
+
+FIM_MOD:
+    RET            // return A (resto)
+
+DIV_ZERO:
+    MOV A, D       // resto = dividendo quando divisor = 0
+    RET
+
+// PROGRAMA PRINCIPAL (MAIN)
+MAIN:
+    LXI H, 0050h   // HL = 0050h --> aponta para dividendo
+    MOV B, M       // B = MEM[HL] --> carrega dividendo em B
+    INX H          // HL = HL + 1 --> aponta para divisor
+    MOV C, M       // C = MEM[HL] --> carrega divisor em C
+
+    CALL F_MOD     // A = F_MOD(B, C)
+    STA 0052h      // MEM[0052h] = A --> armazena resto
+    HLT
+
+END:
+
+// Área de dados
+// 0050h: 08h    // dividendo: 8
+// 0051h: 03h    // divisor:   3
+// 0052h: 00h    // resto: 8 % 3 = 2 (02h)

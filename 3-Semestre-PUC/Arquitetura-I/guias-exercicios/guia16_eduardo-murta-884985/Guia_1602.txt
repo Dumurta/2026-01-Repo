@@ -1,0 +1,58 @@
+// Guia_1602.txt
+// 884985 - Eduardo Murta de Abreu
+//
+// Quociente inteiro de dois números de 8 bits usando subtrações sucessivas (IDIV)
+// Armazenar dividendo em 0050h
+// Armazenar divisor em 0051h
+// Resultado (quociente) armazenado em 0052h
+//
+// F_DIV - Função IDIV   // A = div(B, C)
+// @return A              // quociente inteiro
+// @param  B              // dividendo
+// @param  C              // divisor
+
+    JMP MAIN       // Pula para MAIN, evitando área de funções
+
+// FUNÇÃO DIVISÃO (F_DIV)
+// Estratégia: subtrair o divisor do dividendo repetidamente,
+//             contando quantas vezes cabe (= quociente)
+F_DIV:
+    MVI A, 00h     // A = 0  --> inicializa retorno
+    MOV D, B       // D = B  --> cópia do dividendo (variável local: resto parcial)
+    MVI E, 00h     // E = 0  --> inicializa quociente
+
+    // Verificar divisão por zero
+    MOV A, C       // A = divisor
+    CPI 00h        // divisor == 0?
+    JZ FIM_DIV     // se sim, termina (quociente = 0)
+
+    MOV A, D       // A = dividendo (começa o loop com o valor completo)
+
+DIV_LOOP:
+    CMP C          // A < divisor?
+    JC FIM_DIV     // se sim (Carry=1), termina
+    SUB C          // A = A - divisor
+    INR E          // E++ (conta mais uma subtração)
+    JMP DIV_LOOP
+
+FIM_DIV:
+    MOV A, E       // A = quociente
+    RET            // return A
+
+// PROGRAMA PRINCIPAL (MAIN)
+MAIN:
+    LXI H, 0050h   // HL = 0050h --> aponta para dividendo
+    MOV B, M       // B = MEM[HL] --> carrega dividendo em B
+    INX H          // HL = HL + 1 --> aponta para divisor
+    MOV C, M       // C = MEM[HL] --> carrega divisor em C
+
+    CALL F_DIV     // A = F_DIV(B, C)
+    STA 0052h      // MEM[0052h] = A --> armazena quociente
+    HLT
+
+END:
+
+// Área de dados
+// 0050h: 08h    // dividendo: 8
+// 0051h: 03h    // divisor:   3
+// 0052h: 00h    // quociente: 8 / 3 = 2 (02h)

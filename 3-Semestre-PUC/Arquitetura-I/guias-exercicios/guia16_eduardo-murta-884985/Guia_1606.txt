@@ -1,0 +1,58 @@
+// Guia_1606.txt
+// 884985 - Eduardo Murta de Abreu
+//
+// Calcular quadrado de um número via soma de ímpares consecutivos
+// Número armazenado em 0050h
+// Resultado (quadrado) armazenado em 0051h
+//
+// Fórmula: n² = 1 + 3 + 5 + ... + (2n-1)
+// Exemplo: 5² = 1+3+5+7+9 = 25
+//
+// F_SQR - Função QUADRADO  // A = sqr(B)
+// @return A                 // n²
+// @param  B                 // n
+
+    JMP MAIN       // Pula para MAIN, evitando área de funções
+
+// FUNÇÃO QUADRADO (F_SQR)
+F_SQR:
+    MVI D, 01h     // D = 1  --> primeiro número ímpar
+    MVI E, 00h     // E = 0  --> acumulador da soma
+    MOV C, B       // C = n  --> contador de iterações
+
+    // Verificar se n = 0
+    MOV A, C
+    CPI 00h
+    JZ FIM_SQR     // 0² = 0
+
+SQR_LOOP:
+    MOV A, E       // A = acumulador atual
+    ADD D          // A = A + ímpar atual
+    MOV E, A       // E = novo acumulador
+
+    // Próximo ímpar: D = D + 2
+    MOV A, D
+    ADI 02h
+    MOV D, A
+
+    DCR C          // C-- (contador)
+    JNZ SQR_LOOP
+
+FIM_SQR:
+    MOV A, E       // A = n²
+    RET            // return A
+
+// PROGRAMA PRINCIPAL (MAIN)
+MAIN:
+    LXI H, 0050h   // HL = 0050h --> aponta para número
+    MOV B, M       // B = MEM[HL] --> carrega n em B
+
+    CALL F_SQR     // A = F_SQR(B)
+    STA 0051h      // MEM[0051h] = A --> armazena quadrado
+    HLT
+
+END:
+
+// Área de dados
+// 0050h: 05h    // n = 5
+// 0051h: 00h    // resultado: 5² = 25 = 19h

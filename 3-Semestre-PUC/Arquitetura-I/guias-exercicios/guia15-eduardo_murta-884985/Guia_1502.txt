@@ -1,0 +1,47 @@
+// Guia_1502.txt
+// Eduardo Murta de Abreu - 884985
+//
+// dado05 = dado01 - dado02 + dado03 + dado04 (16 bits)
+
+// Área de Código
+    // dado01 - dado02
+    LHLD dado01     // HL = [dado01] (16 bits)
+    XCHG            // DE = HL (DE = dado01)
+    LHLD dado02     // HL = [dado02]
+    CALL SUB16      // HL = DE - HL (dado01 - dado02)
+
+    // + dado03
+    XCHG            // DE = resultado anterior
+    LHLD dado03     // HL = [dado03]
+    DAD D           // HL = DE + HL (resultado + dado03)
+
+    // + dado04
+    XCHG            // DE = resultado anterior
+    LHLD dado04     // HL = [dado04]
+    DAD D           // HL = DE + HL (resultado + dado04)
+
+    // Armazenar resultado
+    SHLD dado05     // [dado05] = HL
+    HLT
+
+// Subrotina: SUB16 - Subtrai HL de DE (DE - HL)
+// Entrada: DE = minuendo, HL = subtraendo
+// Saída: HL = resultado
+SUB16:
+    MOV A, E        // A = E (parte baixa)
+    SUB L           // A = E - L
+    MOV E, A        // E = resultado parte baixa
+
+    MOV A, D        // A = D (parte alta)
+    SBB H           // A = D - H - borrow
+    MOV D, A        // D = resultado parte alta
+
+    XCHG            // HL = resultado
+    RET
+
+// Área de Dados (16 bits - little endian)
+dado01: dw 0123h    // Exemplo: 0123h = 291 decimal
+dado02: dw 0020h    // 0020h = 32 decimal
+dado03: dw 0100h    // 0100h = 256 decimal
+dado04: dw 0005h    // 0005h = 5 decimal
+dado05: dw 0000h    // Resultado: 0123h - 0020h + 0100h + 0005h = 0208h

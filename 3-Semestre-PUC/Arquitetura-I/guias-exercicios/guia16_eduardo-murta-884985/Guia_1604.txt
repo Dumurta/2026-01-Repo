@@ -1,0 +1,59 @@
+// Guia_1604.txt
+// 884985 - Eduardo Murta de Abreu
+//
+// Encontrar o menor valor em um array de números de 8 bits
+// Tamanho do array armazenado em 0040h
+// Array armazenado a partir de 0050h
+// Resultado (menor valor) armazenado em 0041h
+//
+// F_MIN - Função MINVAL  // A = min(HL, B)
+// @return A               // menor valor do array
+// @param  HL              // endereço inicial do array
+// @param  B               // tamanho do array
+
+    JMP MAIN       // Pula para MAIN, evitando área de funções
+
+// FUNÇÃO MENOR (F_MIN)
+// Estratégia: percorre o array comparando cada elemento com o menor
+//             conhecido até o momento (inicializado com o 1º elemento)
+F_MIN:
+    MOV A, M       // A = primeiro elemento (menor inicial)
+    DCR B          // B = tamanho - 1 (primeiro elemento já usado)
+    JZ FIM_MIN     // se array tem 1 elemento, termina
+
+    INX H          // HL aponta para o 2º elemento
+
+MIN_LOOP:
+    CMP M          // A < MEM[HL]?
+    JC PULA        // se sim (Carry=1), A já é o menor; pula atualização
+    MOV A, M       // se não, atualiza menor com elemento atual
+
+PULA:
+    INX H          // HL aponta para próximo elemento
+    DCR B          // B-- (decrementa contador)
+    JNZ MIN_LOOP   // se ainda há elementos, continua
+
+FIM_MIN:
+    RET            // return A (menor valor)
+
+// PROGRAMA PRINCIPAL (MAIN)
+MAIN:
+    LXI H, 0040h   // HL aponta para o tamanho do array
+    MOV B, M       // B = tamanho do array
+
+    LXI H, 0050h   // HL = 0050h --> aponta para o início do array
+
+    CALL F_MIN     // A = F_MIN(HL, B)
+    STA 0041h      // MEM[0041h] = A --> armazena menor valor
+    HLT
+
+END:
+
+// Área de dados
+// 0040h: 05h    // tamanho do array (5 elementos)
+// 0041h: 00h    // resultado: menor valor (3 = 03h)
+// 0050h: 0Ah    // elemento 1: 10
+// 0051h: 03h    // elemento 2:  3  <- MENOR
+// 0052h: 0Fh    // elemento 3: 15
+// 0053h: 07h    // elemento 4:  7
+// 0054h: 0Ch    // elemento 5: 12

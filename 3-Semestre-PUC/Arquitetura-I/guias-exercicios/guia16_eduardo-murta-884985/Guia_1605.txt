@@ -1,0 +1,62 @@
+// Guia_1605.txt
+// 884985 - Eduardo Murta de Abreu
+//
+// Converter valor BCD para hexadecimal equivalente
+// Valor BCD armazenado em 0050h
+// Resultado hexadecimal armazenado em 0051h
+//
+// Fórmula: hex = HI(bcd) * 10 + LO(bcd)
+// Exemplo: BCD 24h → dezenas=2, unidades=4 → 2*10+4 = 24d = 18h
+//
+// F_BCD - Função BCD_TO_HEX  // A = bcd(B)
+// @return A                   // valor hexadecimal equivalente
+// @param  B                   // valor em BCD
+
+    JMP MAIN       // Pula para MAIN, evitando área de funções
+
+// FUNÇÃO BCD→HEX (F_BCD)
+// Nota: usa RRC (rotate right circular) para deslocar sem depender do Carry,
+//       depois mascara com ANI 0Fh para isolar apenas o nibble baixo resultante.
+F_BCD:
+    MOV D, B       // D = B --> guarda cópia do valor BCD
+
+    // Extrair dezenas: nibble alto → nibble baixo via 4 rotações circulares
+    MOV A, D       // A = valor BCD
+    ANI 0F0h       // A = A AND F0h → isola nibble alto (dezenas BCD)
+    RRC            // rotate right circular (não usa carry): bit0 <- bit1 <- ... <- bit7 <- bit0
+    RRC            // 2x
+    RRC            // 3x
+    RRC            // 4x → dezenas agora no nibble baixo
+    ANI 0Fh        // garante que nibble alto está limpo após as rotações
+    MOV C, A       // C = dezenas
+
+    // Multiplicar dezenas por 10: 10 = 8 + 2
+    ADD A          // A = dezenas * 2
+    MOV E, A       // E = dezenas * 2 (salva)
+    ADD A          // A = dezenas * 4
+    ADD A          // A = dezenas * 8
+    ADD E          // A = dezenas * 8 + dezenas * 2 = dezenas * 10
+    MOV E, A       // E = dezenas * 10
+
+    // Extrair unidades: nibble baixo
+    MOV A, D       // A = valor BCD original
+    ANI 0Fh        // A = unidades
+
+    // Resultado final
+    ADD E          // A = dezenas*10 + unidades
+    RET            // return A
+
+// PROGRAMA PRINCIPAL (MAIN)
+MAIN:
+    LXI H, 0050h   // HL = 0050h --> aponta para valor BCD
+    MOV B, M       // B = MEM[HL] --> carrega valor BCD em B
+
+    CALL F_BCD     // A = F_BCD(B)
+    STA 0051h      // MEM[0051h] = A --> armazena resultado hexadecimal
+    HLT
+
+END:
+
+// Área de dados
+// 0050h: 24h    // valor BCD: 24 (dezenas=2, unidades=4)
+// 0051h: 00h    // resultado: 2*10 + 4 = 24d = 18h

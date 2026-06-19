@@ -1,0 +1,27 @@
+// Guia_1506.txt
+// Eduardo Murta de Abreu - 884985
+//
+// dado03 = 2 * (dado01 + 4 * dado02) (8 bits)
+
+// Área de Código
+    // Calcular 4 * dado02
+    LDA dado02       // A = dado02
+    ADD A            // A = 2 * dado02
+    ADD A            // A = 4 * dado02
+    MOV B, A         // B = 4 * dado02
+
+    // Calcular (dado01 + 4 * dado02)
+    LDA dado01       // A = dado01
+    ADD B            // A = dado01 + 4*dado02
+    MOV C, A         // C = (dado01 + 4*dado02)
+
+    // Calcular 2 * resultado
+    ADD C            // A = C + C = 2 * (dado01 + 4*dado02)
+
+    STA dado03       // [dado03] = resultado final
+    HLT
+
+// Área de Dados
+dado01: db 02h       // Exemplo: 2
+dado02: db 03h       // Exemplo: 3
+dado03: db 00h       // Resultado: 2*(2 + 4*3) = 2*(14) = 28 (1Ch)

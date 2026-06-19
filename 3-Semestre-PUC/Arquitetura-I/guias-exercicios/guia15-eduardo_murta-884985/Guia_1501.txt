@@ -1,0 +1,21 @@
+// Guia_1501.txt
+// Eduardo Murta de Abreu - 884985
+//
+// dado04 = dado01 - dado02 - dado03
+
+// Área de Código
+    LXI H, dado01    // HL aponta para dado01
+    MOV A, M         // A = [dado01]
+    INX H            // HL aponta para dado02
+    SUB M            // A = A - [dado02]
+    INX H            // HL aponta para dado03
+    SUB M            // A = A - [dado03]
+    INX H            // HL aponta para dado04
+    MOV M, A         // [dado04] = A
+    HLT              // Fim do programa
+
+// Área de Dados
+dado01: db 08h       // Exemplo: 8
+dado02: db 02h       // Exemplo: 2
+dado03: db 01h       // Exemplo: 1
+dado04: db 00h       // Resultado = 8 - 2 - 1 = 5

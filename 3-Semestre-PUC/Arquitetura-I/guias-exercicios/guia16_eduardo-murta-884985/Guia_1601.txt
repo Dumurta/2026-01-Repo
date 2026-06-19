@@ -1,0 +1,60 @@
+// Guia_1601.txt
+// 884985 - Eduardo Murta de Abreu
+//
+// Produto de dois números de 8 bits usando somas sucessivas (IMUL)
+// Armazenar primeiro número (multiplicando) em 0050h
+// Armazenar segundo número (multiplicador) em 0051h
+// Resultado (produto) armazenado em 0052h
+//
+// F_MUL - Função IMUL   // A = mul(B, C)
+// @return A              // produto (dado01 * dado02)
+// @param  B              // multiplicando
+// @param  C              // multiplicador
+
+    JMP MAIN       // Pula para MAIN, evitando área de funções
+
+// FUNÇÃO MULTIPLICAÇÃO (F_MUL)
+// Estratégia: somar B repetidamente C vezes
+// Exemplo: 3 * 4 = 4 + 4 + 4 = 12
+F_MUL:
+    MVI A, 00h     // A = 0  --> inicializa acumulador (resultado)
+    MOV D, B       // D = B  --> cópia do multiplicando (local variable)
+    MOV E, C       // E = C  --> cópia do multiplicador (contador)
+
+    // Verificar se algum operando é zero
+    MOV A, E       // A = multiplicador
+    CPI 00h        // multiplicador == 0?
+    JZ FIM_MUL     // se sim, resultado = 0
+
+    MOV A, D       // A = multiplicando
+    CPI 00h        // multiplicando == 0?
+    JZ FIM_MUL     // se sim, resultado = 0
+
+    MVI A, 00h     // A = 0 --> reinicia acumulador
+
+MUL_LOOP:
+    ADD D          // A = A + multiplicando
+    DCR E          // E = E - 1 (decrementa contador)
+    JNZ MUL_LOOP   // se E != 0, continua somando
+
+FIM_MUL:
+    RET            // return A (produto)
+
+// PROGRAMA PRINCIPAL (MAIN)
+MAIN:
+    LXI H, 0050h   // HL = 0050h --> aponta para dado1 (multiplicando)
+    MOV B, M       // B = MEM[HL] --> carrega multiplicando em B
+    INX H          // HL = HL + 1 --> aponta para dado2
+    MOV C, M       // C = MEM[HL] --> carrega multiplicador em C
+
+C_MUL:
+    CALL F_MUL     // A = F_MUL(B, C) --> chama função
+    STA 0052h      // MEM[0052h] = A --> armazena produto
+    HLT            // Para execução
+
+END:
+
+// Área de dados
+// 0050h: 06h    // multiplicando: 6
+// 0051h: 07h    // multiplicador: 7
+// 0052h: 00h    // resultado: 6 * 7 = 42 (2Ah)

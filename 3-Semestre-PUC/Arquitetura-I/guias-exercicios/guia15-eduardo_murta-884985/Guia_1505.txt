@@ -1,0 +1,45 @@
+// Guia_1505.txt
+// Eduardo Murta de Abreu - 884985
+//
+// dado03 = dado01 * 2 - dado02 / 2 (8 bits)
+// Nota: multiplicação por 2 via soma; divisão por 2 via soma e comparação,
+//       conforme orientação do enunciado (evitar rotações).
+
+// Área de Código
+    // Calcular dado01 * 2
+    LDA dado01       // A = dado01
+    ADD A            // A = A + A = dado01 * 2
+    MOV B, A         // B = dado01 * 2
+
+    // Calcular dado02 / 2 (inteira, sem sinal)
+    // Estratégia: subtrair 2 repetidamente contando quantas vezes cabe,
+    //             depois o quociente fica em C.
+    // Alternativa simples para dados positivos: usar soma acumulada.
+    // Aqui somamos de 2 em 2 até atingir dado02 e contamos iterações.
+    // Para manter compatibilidade com o simulador e simplicidade,
+    // usamos a abordagem: quociente = (dado02 - dado02%2) / 2
+    //   calculado como: somar 1 para cada 2 unidades de dado02.
+    //
+    // Implementação direta via loop de subtração:
+    LDA dado02       // A = dado02
+    MVI C, 00h       // C = quociente = 0
+DIV2:
+    CPI 02h          // A < 2 ?
+    JC  FIM_DIV      // se sim, termina
+    SUI 02h          // A = A - 2
+    INR C            // C++ (quociente)
+    JMP DIV2
+FIM_DIV:
+    // C = dado02 / 2
+
+    // Calcular dado01*2 - dado02/2
+    MOV A, B         // A = dado01 * 2
+    SUB C            // A = dado01*2 - dado02/2
+    STA dado03       // [dado03] = resultado
+
+    HLT              // Fim do programa
+
+// Área de Dados
+dado01: db 06h       // Exemplo: 6
+dado02: db 0Ah       // Exemplo: 10
+dado03: db 00h       // Resultado: 6*2 - 10/2 = 12 - 5 = 7 (07h)

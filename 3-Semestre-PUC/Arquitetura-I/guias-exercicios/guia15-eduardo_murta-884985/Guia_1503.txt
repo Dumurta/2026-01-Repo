@@ -1,0 +1,31 @@
+// Guia_1503.txt
+// Eduardo Murta de Abreu - 884985
+//
+// dado05 = dado01 + dado02 + dado03 - dado04 (8 bits BCD)
+
+// Área de Código
+    LXI H, dado01    // HL aponta para dado01
+    MOV A, M         // A = [dado01] (BCD)
+    INX H            // HL aponta para dado02
+
+    ADD M            // A = A + [dado02]
+    DAA              // Ajusta para BCD após adição
+
+    INX H            // HL aponta para dado03
+    ADD M            // A = A + [dado03]
+    DAA              // Ajusta para BCD
+
+    INX H            // HL aponta para dado04
+    SUB M            // A = A - [dado04]
+    DAA              // Ajusta para BCD
+
+    INX H            // HL aponta para dado05
+    MOV M, A         // [dado05] = A (resultado BCD)
+    HLT              // Fim do programa
+
+// Área de Dados (valores em BCD)
+dado01: db 20h       // Exemplo: 20 decimal em BCD
+dado02: db 15h       // 15 decimal em BCD
+dado03: db 08h       // 08 decimal em BCD
+dado04: db 05h       // 05 decimal em BCD
+dado05: db 00h       // Resultado: 20 + 15 + 08 - 05 = 38 (38h em BCD)

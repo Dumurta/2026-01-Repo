@@ -1,0 +1,30 @@
+// Guia_1504.txt
+// Eduardo Murta de Abreu - 884985
+//
+// dado03 = 4 * dado01 - 3 * dado02 (8 bits)
+
+// Área de Código
+    // Calcular 4 * dado01
+    LDA dado01       // A = dado01
+    ADD A            // A = 2 * dado01
+    ADD A            // A = 4 * dado01
+    MOV B, A         // B = 4 * dado01 (guardar resultado)
+
+    // Calcular 3 * dado02
+    LDA dado02       // A = dado02
+    MOV C, A         // C = dado02 (cópia)
+    ADD A            // A = 2 * dado02
+    ADD C            // A = 2*dado02 + dado02 = 3 * dado02
+    MOV C, A         // C = 3 * dado02
+
+    // Calcular 4*dado01 - 3*dado02
+    MOV A, B         // A = 4 * dado01
+    SUB C            // A = 4*dado01 - 3*dado02
+    STA dado03       // [dado03] = resultado
+
+    HLT              // Fim do programa
+
+// Área de Dados
+dado01: db 08h       // Exemplo: 8
+dado02: db 02h       // Exemplo: 2
+dado03: db 00h       // Resultado: 4*8 - 3*2 = 32 - 6 = 26 (1Ah)

@@ -1,0 +1,80 @@
+// Guia_1607.txt
+// 884985 - Eduardo Murta de Abreu
+//
+// Calcular fatorial de um número usando função recursiva + F_MUL (IMUL)
+// Número armazenado em 0050h
+// Resultado (fatorial) armazenado em 0051h
+//
+// Fórmula: n! = n * (n-1)!    caso base: 0! = 1! = 1
+// Exemplo: 5! = 5*4*3*2*1 = 120
+//
+// F_MUL - Função IMUL   // A = mul(B, C)  (reutilizada do exercício 01)
+// F_FAT - Função FATORIAL // A = fat(B)
+// @return A               // n!
+// @param  B               // n
+
+    JMP MAIN       // Pula para MAIN, evitando área de funções
+
+// ─── F_MUL: produto via somas sucessivas ─────────────────────────────────────
+// @param B: multiplicando  @param C: multiplicador  @return A: B*C
+F_MUL:
+    MOV D, B       // D = multiplicando (cópia local)
+    MOV E, C       // E = multiplicador (contador)
+
+    MOV A, E
+    CPI 00h
+    JZ MUL_ZERO
+    MOV A, D
+    CPI 00h
+    JZ MUL_ZERO
+
+    MVI A, 00h     // A = 0 (acumulador)
+
+MUL_LOOP:
+    ADD D          // A = A + multiplicando
+    DCR E
+    JNZ MUL_LOOP
+    RET
+
+MUL_ZERO:
+    MVI A, 00h
+    RET
+
+// ─── F_FAT: fatorial recursivo ────────────────────────────────────────────────
+// @param B: n  @return A: n!
+// Nota: C é salvo na pilha com PUSH B antes de cada chamada recursiva para
+//       preservar o valor de n ao retornar, pois F_FAT e F_MUL sobrescrevem C.
+F_FAT:
+    MOV A, B       // A = n
+    CPI 00h
+    JZ BASE_FAT    // 0! = 1
+    CPI 01h
+    JZ BASE_FAT    // 1! = 1
+
+    // Caso recursivo: n! = n * (n-1)!
+    PUSH B         // salva BC (B=n) na pilha antes da chamada recursiva
+    DCR B          // B = n-1
+    CALL F_FAT     // A = (n-1)!
+    MOV C, A       // C = (n-1)!  (2º parâmetro para F_MUL)
+    POP B          // restaura BC: B = n (1º parâmetro para F_MUL)
+    CALL F_MUL     // A = B * C = n * (n-1)!
+    RET
+
+BASE_FAT:
+    MVI A, 01h     // A = 1
+    RET
+
+// ─── MAIN ─────────────────────────────────────────────────────────────────────
+MAIN:
+    LXI H, 0050h   // HL = 0050h --> aponta para n
+    MOV B, M       // B = MEM[HL] --> carrega n em B
+
+    CALL F_FAT     // A = F_FAT(B) = n!
+    STA 0051h      // MEM[0051h] = A --> armazena fatorial
+    HLT
+
+END:
+
+// Área de dados
+// 0050h: 05h    // n = 5
+// 0051h: 00h    // resultado: 5! = 120 = 78h
