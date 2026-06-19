@@ -1,0 +1,328 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <time.h>
+
+#define MAX_TEXTO 256
+#define MAX_TIPOS_COZINHA 10
+#define MAX_LINHA_CSV 1024
+#define PATH_CSV "/tmp/restaurantes.csv"
+#define TAM_TABELA 31
+#define TAM_RESERVA 19
+#define TAM_TOTAL 50
+
+int texto_tamanho(char *s)
+{
+    int i = 0;
+    while (s[i] != '\0')
+        i++;
+    return i;
+}
+void texto_copiar(char *d, char *o)
+{
+    int i = 0;
+    while (o[i] != '\0')
+    {
+        d[i] = o[i];
+        i++;
+    }
+    d[i] = '\0';
+}
+void texto_concatenar(char *d, char *o)
+{
+    int i = 0, j = texto_tamanho(d);
+    while (o[i] != '\0')
+    {
+        d[j] = o[i];
+        i++;
+        j++;
+    }
+    d[j] = '\0';
+}
+
+typedef struct
+{
+    int ano, mes, dia;
+} Data;
+typedef struct
+{
+    int hora, minuto;
+} Hora;
+typedef struct
+{
+    int id, capacidade, quantidade_tipos, faixa_preco;
+    char nome[MAX_TEXTO], cidade[MAX_TEXTO];
+    double avaliacao;
+    char tipos_cozinha[MAX_TIPOS_COZINHA][MAX_TEXTO];
+    Hora horario_abertura, horario_fechamento;
+    Data data_abertura;
+    bool aberto;
+} Restaurante;
+
+Data parse_data(char *s)
+{
+    Data d;
+    sscanf(s, "%d-%d-%d", &d.ano, &d.mes, &d.dia);
+    return d;
+}
+void formatar_data(Data *d, char *b) { sprintf(b, "%02d/%02d/%04d", d->dia, d->mes, d->ano); }
+Hora parse_hora(char *s)
+{
+    Hora h;
+    sscanf(s, "%d:%d", &h.hora, &h.minuto);
+    return h;
+}
+void formatar_hora(Hora *h, char *b) { sprintf(b, "%02d:%02d", h->hora, h->minuto); }
+int contar_faixa_preco(char *f)
+{
+    int t = 0, i = 0;
+    while (f[i] != '\0')
+    {
+        if (f[i] == '$')
+            t++;
+        i++;
+    }
+    return t;
+}
+void copiar_tipos(Restaurante *r, char *s)
+{
+    int i = 0, j = 0, q = 0;
+    while (s[i] != '\0' && q < MAX_TIPOS_COZINHA)
+    {
+        if (s[i] == ';')
+        {
+            r->tipos_cozinha[q][j] = '\0';
+            q++;
+            j = 0;
+        }
+        else if (j < MAX_TEXTO - 1)
+        {
+            r->tipos_cozinha[q][j] = s[i];
+            j++;
+        }
+        i++;
+    }
+    r->tipos_cozinha[q][j] = '\0';
+    r->quantidade_tipos = q + 1;
+}
+Restaurante *parse_restaurante(char *s)
+{
+    Restaurante *r = (Restaurante *)malloc(sizeof(Restaurante));
+    char tipos[MAX_TEXTO], faixa[10], horario[20], data[20], aberto[10];
+    int h1 = 0, m1 = 0, h2 = 0, m2 = 0;
+    sscanf(s, "%d,%255[^,],%255[^,],%d,%lf,%255[^,],%9[^,],%19[^,],%19[^,],%9s",
+           &r->id, r->nome, r->cidade, &r->capacidade, &r->avaliacao, tipos, faixa, horario, data, aberto);
+    copiar_tipos(r, tipos);
+    r->faixa_preco = contar_faixa_preco(faixa);
+    sscanf(horario, "%d:%d-%d:%d", &h1, &m1, &h2, &m2);
+    r->horario_abertura.hora = h1;
+    r->horario_abertura.minuto = m1;
+    r->horario_fechamento.hora = h2;
+    r->horario_fechamento.minuto = m2;
+    r->data_abertura = parse_data(data);
+    r->aberto = strcmp(aberto, "true") == 0;
+    return r;
+}
+void faixa_para_txt(int f, char *b)
+{
+    texto_copiar(b, "$");
+    if (f == 2)
+        texto_copiar(b, "$$");
+    else if (f == 3)
+        texto_copiar(b, "$$$");
+    else if (f == 4)
+        texto_copiar(b, "$$$$");
+}
+void formatar_tipos(Restaurante *r, char *b)
+{
+    int i = 0;
+    texto_copiar(b, "[");
+    while (i < r->quantidade_tipos)
+    {
+        if (i > 0)
+            texto_concatenar(b, ",");
+        texto_concatenar(b, r->tipos_cozinha[i]);
+        i++;
+    }
+    texto_concatenar(b, "]");
+}
+void formatar_restaurante(Restaurante *r, char *b)
+{
+    char t[MAX_TEXTO], f[5], ha[6], hf[6], d[11];
+    formatar_tipos(r, t);
+    faixa_para_txt(r->faixa_preco, f);
+    formatar_hora(&r->horario_abertura, ha);
+    formatar_hora(&r->horario_fechamento, hf);
+    formatar_data(&r->data_abertura, d);
+    sprintf(b, "[%d ## %s ## %s ## %d ## %.1f ## %s ## %s ## %s-%s ## %s ## %s]",
+            r->id, r->nome, r->cidade, r->capacidade, r->avaliacao, t, f, ha, hf, d, r->aberto ? "true" : "false");
+}
+
+typedef struct
+{
+    int tamanho;
+    Restaurante **restaurantes;
+} ColecaoRestaurantes;
+int contar_registros(char *p)
+{
+    int n = 0;
+    char l[MAX_LINHA_CSV];
+    FILE *a = fopen(p, "r");
+    if (a != NULL)
+    {
+        fgets(l, sizeof(l), a);
+        while (fgets(l, sizeof(l), a) != NULL)
+        {
+            if (l[0] != '\0' && l[0] != '\n')
+                n++;
+        }
+        fclose(a);
+    }
+    return n;
+}
+ColecaoRestaurantes *ler_csv()
+{
+    ColecaoRestaurantes *c = (ColecaoRestaurantes *)malloc(sizeof(ColecaoRestaurantes));
+    c->tamanho = contar_registros(PATH_CSV);
+    c->restaurantes = (Restaurante **)malloc(sizeof(Restaurante *) * c->tamanho);
+    char l[MAX_LINHA_CSV];
+    FILE *a = fopen(PATH_CSV, "r");
+    int i = 0;
+    if (a != NULL)
+    {
+        fgets(l, sizeof(l), a);
+        while (fgets(l, sizeof(l), a) != NULL && i < c->tamanho)
+        {
+            int j = 0;
+            while (l[j] != '\0')
+            {
+                if (l[j] == '\n')
+                    l[j] = '\0';
+                j++;
+            }
+            if (l[0] != '\0')
+            {
+                c->restaurantes[i] = parse_restaurante(l);
+                i++;
+            }
+        }
+        fclose(a);
+    }
+    return c;
+}
+Restaurante *buscar_por_id(ColecaoRestaurantes *c, int id)
+{
+    int i = 0;
+    Restaurante *r = NULL;
+    while (i < c->tamanho && r == NULL)
+    {
+        if (c->restaurantes[i]->id == id)
+            r = c->restaurantes[i];
+        i++;
+    }
+    return r;
+}
+
+/* ---- Hash Direta com Reserva ---- */
+Restaurante *tabela[TAM_TOTAL];
+int proximo_reserva = TAM_TABELA;
+long comparacoes = 0;
+
+int ascii_nome(char *nome)
+{
+    int soma = 0, i = 0;
+    while (nome[i] != '\0')
+    {
+        soma += (unsigned char)nome[i];
+        i++;
+    }
+    return soma;
+}
+
+void inserir_hash(Restaurante *r)
+{
+    int h = ascii_nome(r->nome) % TAM_TABELA;
+    if (tabela[h] == NULL)
+    {
+        tabela[h] = r;
+    }
+    else if (proximo_reserva < TAM_TOTAL)
+    {
+        tabela[proximo_reserva] = r;
+        proximo_reserva++;
+    }
+    else
+    {
+        printf("%s\n", r->nome);
+    }
+}
+
+void pesquisar_hash(char *nome)
+{
+    int h = ascii_nome(nome) % TAM_TABELA;
+    comparacoes++;
+    if (tabela[h] != NULL && strcmp(tabela[h]->nome, nome) == 0)
+    {
+        char b[MAX_LINHA_CSV];
+        formatar_restaurante(tabela[h], b);
+        printf("%d %s\n", h, b);
+    }
+    else
+    {
+        bool found = false;
+        int i = TAM_TABELA;
+        while (i < proximo_reserva && !found)
+        {
+            comparacoes++;
+            if (tabela[i] != NULL && strcmp(tabela[i]->nome, nome) == 0)
+            {
+                char b[MAX_LINHA_CSV];
+                formatar_restaurante(tabela[i], b);
+                printf("%d %s\n", i, b);
+                found = true;
+            }
+            i++;
+        }
+        if (!found)
+            printf("-1\n");
+    }
+}
+
+int main()
+{
+    int i;
+    for (i = 0; i < TAM_TOTAL; i++)
+        tabela[i] = NULL;
+    ColecaoRestaurantes *c = ler_csv();
+    int id;
+    scanf("%d", &id);
+    while (id != -1)
+    {
+        Restaurante *r = buscar_por_id(c, id);
+        if (r != NULL)
+            inserir_hash(r);
+        scanf("%d", &id);
+    }
+    clock_t inicio = clock();
+    char linha[MAX_LINHA_CSV];
+    fgets(linha, sizeof(linha), stdin);
+    while (fgets(linha, sizeof(linha), stdin) != NULL)
+    {
+        int j = 0;
+        while (linha[j] != '\0')
+        {
+            if (linha[j] == '\n' || linha[j] == '\r')
+                linha[j] = '\0';
+            j++;
+        }
+        if (strcmp(linha, "FIM") != 0 && texto_tamanho(linha) > 0)
+            pesquisar_hash(linha);
+    }
+    clock_t fim = clock();
+    double tempo = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+    FILE *log = fopen("884985_hash_reserva.txt", "w");
+    fprintf(log, "884985\t%ld\t%.2f\n", comparacoes, tempo);
+    fclose(log);
+    return 0;
+}
