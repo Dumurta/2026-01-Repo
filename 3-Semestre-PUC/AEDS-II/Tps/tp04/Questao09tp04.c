@@ -315,9 +315,7 @@ void trie_pesquisar(NoTrie *raiz, char *nome)
     }
     if (cur->fim)
     {
-        char b[MAX_LINHA_CSV];
-        formatar_restaurante(cur->restaurante, b);
-        printf("%s SIM %s\n", caminho, b);
+        printf("%s SIM\n", caminho);
     }
     else
     {

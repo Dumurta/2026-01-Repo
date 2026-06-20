@@ -259,9 +259,7 @@ int lista_pesquisar(Celula *head, char *nome, char *caminho_n1)
         comparacoes++;
         if (strcmp(cur->restaurante->nome, nome) == 0)
         {
-            char b[MAX_LINHA_CSV];
-            formatar_restaurante(cur->restaurante, b);
-            printf("%s SIM %s\n", caminho, b);
+            printf("%s SIM\n", caminho);
             return 1;
         }
         /* Acumula nomes visitados antes do encontrado */

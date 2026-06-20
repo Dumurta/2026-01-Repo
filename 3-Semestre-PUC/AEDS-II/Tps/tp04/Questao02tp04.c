@@ -245,118 +245,131 @@ void inicializar_nulo()
     NULO_RB->restaurante = NULL;
 }
 
-void rot_esq(NoRB **raiz, NoRB *x)
+
+/* Rotacao top-down: usa ponteiros pai da estrutura para corretude */
+static void rotacionar_td(NoRB **raiz, NoRB *i)
 {
-    NoRB *y = x->dir;
-    x->dir = y->esq;
-    if (y->esq != NULO_RB)
-        y->esq->pai = x;
-    y->pai = x->pai;
-    if (x->pai == NULO_RB)
-        *raiz = y;
-    else if (x == x->pai->esq)
-        x->pai->esq = y;
-    else
-        x->pai->dir = y;
-    y->esq = x;
-    x->pai = y;
-}
-void rot_dir(NoRB **raiz, NoRB *y)
-{
-    NoRB *x = y->esq;
-    y->esq = x->dir;
-    if (x->dir != NULO_RB)
-        x->dir->pai = y;
-    x->pai = y->pai;
-    if (y->pai == NULO_RB)
-        *raiz = x;
-    else if (y == y->pai->esq)
-        y->pai->esq = x;
-    else
-        y->pai->dir = x;
-    x->dir = y;
-    y->pai = x;
-}
-void inserir_fix(NoRB **raiz, NoRB *z)
-{
-    while (z->pai->cor == VERMELHO)
+    NoRB *pai = i->pai;
+    NoRB *avo = pai->pai;
+    NoRB *bisavo = avo->pai;
+    NoRB *novo;
+    if (avo->dir == pai)
     {
-        if (z->pai == z->pai->pai->esq)
+        if (pai->dir == i)
         {
-            NoRB *y = z->pai->pai->dir;
-            if (y->cor == VERMELHO)
-            {
-                z->pai->cor = PRETO;
-                y->cor = PRETO;
-                z->pai->pai->cor = VERMELHO;
-                z = z->pai->pai;
-            }
-            else
-            {
-                if (z == z->pai->dir)
-                {
-                    z = z->pai;
-                    rot_esq(raiz, z);
-                }
-                z->pai->cor = PRETO;
-                z->pai->pai->cor = VERMELHO;
-                rot_dir(raiz, z->pai->pai);
-            }
+            /* RR: rotacao simples esquerda em avo */
+            avo->dir = pai->esq;
+            if (pai->esq != NULO_RB) pai->esq->pai = avo;
+            pai->esq = avo;
+            avo->pai = pai;
+            novo = pai;
         }
         else
         {
-            NoRB *y = z->pai->pai->esq;
-            if (y->cor == VERMELHO)
-            {
-                z->pai->cor = PRETO;
-                y->cor = PRETO;
-                z->pai->pai->cor = VERMELHO;
-                z = z->pai->pai;
-            }
-            else
-            {
-                if (z == z->pai->esq)
-                {
-                    z = z->pai;
-                    rot_dir(raiz, z);
-                }
-                z->pai->cor = PRETO;
-                z->pai->pai->cor = VERMELHO;
-                rot_esq(raiz, z->pai->pai);
-            }
+            /* RL: rotacao dupla (dir em pai, esq em avo) */
+            pai->esq = i->dir;
+            if (i->dir != NULO_RB) i->dir->pai = pai;
+            i->dir = pai;
+            pai->pai = i;
+            avo->dir = i->esq;
+            if (i->esq != NULO_RB) i->esq->pai = avo;
+            i->esq = avo;
+            avo->pai = i;
+            novo = i;
         }
     }
-    (*raiz)->cor = PRETO;
+    else
+    {
+        if (pai->esq == i)
+        {
+            /* LL: rotacao simples direita em avo */
+            avo->esq = pai->dir;
+            if (pai->dir != NULO_RB) pai->dir->pai = avo;
+            pai->dir = avo;
+            avo->pai = pai;
+            novo = pai;
+        }
+        else
+        {
+            /* LR: rotacao dupla (esq em pai, dir em avo) */
+            pai->dir = i->esq;
+            if (i->esq != NULO_RB) i->esq->pai = pai;
+            i->esq = pai;
+            pai->pai = i;
+            avo->esq = i->dir;
+            if (i->dir != NULO_RB) i->dir->pai = avo;
+            i->dir = avo;
+            avo->pai = i;
+            novo = i;
+        }
+    }
+    /* Apos rotacao: novo nao-colorido (preto), filhos coloridos (vermelhos) */
+    novo->cor = PRETO;
+    if (novo->esq != NULO_RB) novo->esq->cor = VERMELHO;
+    if (novo->dir != NULO_RB) novo->dir->cor = VERMELHO;
+    novo->pai = bisavo;
+    if (bisavo == NULO_RB)
+        *raiz = novo;
+    else if (bisavo->esq == avo)
+        bisavo->esq = novo;
+    else
+        bisavo->dir = novo;
 }
+
+/* Insercao top-down: fragmenta nos-4 durante a descida */
+static void inserir_rec(NoRB **raiz, Restaurante *r, NoRB *bisavo, NoRB *avo, NoRB *pai, NoRB *cur)
+{
+    if (cur == NULO_RB)
+    {
+        /* Posicao encontrada: inserir como folha colorida (vermelha) */
+        NoRB *novo = (NoRB *)malloc(sizeof(NoRB));
+        novo->restaurante = r;
+        novo->cor = VERMELHO;
+        novo->esq = novo->dir = NULO_RB;
+        novo->pai = pai;
+        if (pai == NULO_RB)
+            *raiz = novo;
+        else if (strcmp(r->nome, pai->restaurante->nome) < 0)
+            pai->esq = novo;
+        else
+            pai->dir = novo;
+        /* Se pai e colorido (vermelho) -> rotacionar */
+        if (pai != NULO_RB && pai->cor == VERMELHO)
+            rotacionar_td(raiz, novo);
+        return;
+    }
+    /* Verificar no-4 e fragmentar antes de descer */
+    if (cur->esq->cor == VERMELHO && cur->dir->cor == VERMELHO)
+    {
+        cur->cor = VERMELHO;
+        cur->esq->cor = PRETO;
+        cur->dir->cor = PRETO;
+        /* Se pai e colorido (vermelho) -> rotacionar */
+        if (pai != NULO_RB && pai->cor == VERMELHO)
+            rotacionar_td(raiz, cur);
+    }
+    /* Descer recursivamente */
+    int cmp = strcmp(r->nome, cur->restaurante->nome);
+    if (cmp < 0)
+        inserir_rec(raiz, r, avo, pai, cur, cur->esq);
+    else if (cmp > 0)
+        inserir_rec(raiz, r, avo, pai, cur, cur->dir);
+    /* cmp == 0: duplicata, ignorar */
+}
+
 void inserir(NoRB **raiz, Restaurante *r)
 {
-    NoRB *z = (NoRB *)malloc(sizeof(NoRB));
-    z->restaurante = r;
-    z->cor = VERMELHO;
-    z->esq = z->dir = z->pai = NULO_RB;
-    NoRB *y = NULO_RB, *x = *raiz;
-    while (x != NULO_RB)
+    if (*raiz == NULO_RB)
     {
-        y = x;
-        int cmp = strcmp(r->nome, x->restaurante->nome);
-        if (cmp < 0)
-            x = x->esq;
-        else if (cmp > 0)
-            x = x->dir;
-        else
-        {
-            free(z);
-            return;
-        }
+        NoRB *novo = (NoRB *)malloc(sizeof(NoRB));
+        novo->restaurante = r;
+        novo->cor = PRETO;
+        novo->esq = novo->dir = novo->pai = NULO_RB;
+        *raiz = novo;
+        return;
     }
-    z->pai = y;
-    if (y == NULO_RB)
-        *raiz = z;
-    else if (strcmp(r->nome, y->restaurante->nome) < 0)
-        y->esq = z;
-    else
-        y->dir = z;
-    inserir_fix(raiz, z);
+    inserir_rec(raiz, r, NULO_RB, NULO_RB, NULO_RB, *raiz);
+    (*raiz)->cor = PRETO;
 }
 void pesquisar(NoRB *no, char *nome, char *caminho)
 {
@@ -370,9 +383,7 @@ void pesquisar(NoRB *no, char *nome, char *caminho)
         int cmp = strcmp(nome, no->restaurante->nome);
         if (cmp == 0)
         {
-            char b[MAX_LINHA_CSV];
-            formatar_restaurante(no->restaurante, b);
-            printf("%s SIM\n%s\n", caminho, b);
+            printf("%s SIM\n", caminho);
         }
         else if (cmp < 0)
         {
