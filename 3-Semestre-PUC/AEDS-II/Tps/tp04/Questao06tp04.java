@@ -376,7 +376,7 @@ class AVL {
             comparacoes++;
             int c = nome.compareTo(n.restaurante.getNome());
             if (c == 0) {
-                resp = caminho + " SIM";
+                resp = caminho + " SIM " + n.restaurante.formatar();
             } else if (c < 0) {
                 resp = pesquisar(n.esq, nome, caminho + " esq");
             } else {

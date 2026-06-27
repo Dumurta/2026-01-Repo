@@ -388,8 +388,7 @@ class Trie {
             comparacoes++;
             No filho = cur.getFilho(c);
             if (filho == null) {
-                String sep = caminho.length() > 0 ? " " : "";
-                System.out.println(caminho + sep + c + " NAO");
+                System.out.println(caminho + (caminho.length() > 0 ? " " : "") + "NAO");
                 return;
             }
             caminho = caminho + (caminho.length() > 0 ? " " : "") + c;
@@ -397,7 +396,7 @@ class Trie {
             i++;
         }
         if (cur.fim) {
-            System.out.println(caminho + " SIM");
+            System.out.println(caminho + " SIM " + cur.restaurante.formatar());
         } else {
             System.out.println(caminho + " NAO");
         }

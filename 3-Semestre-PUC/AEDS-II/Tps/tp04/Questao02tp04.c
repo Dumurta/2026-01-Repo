@@ -383,7 +383,9 @@ void pesquisar(NoRB *no, char *nome, char *caminho)
         int cmp = strcmp(nome, no->restaurante->nome);
         if (cmp == 0)
         {
-            printf("%s SIM\n", caminho);
+            char b[MAX_LINHA_CSV];
+            formatar_restaurante(no->restaurante, b);
+            printf("%s SIM %s\n", caminho, b);
         }
         else if (cmp < 0)
         {

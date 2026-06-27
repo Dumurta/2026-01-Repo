@@ -295,13 +295,10 @@ void trie_pesquisar(NoTrie *raiz, char *nome)
         NoTrie *filho = get_filho(cur, c);
         if (filho == NULL)
         {
-            char tmp[3];
-            tmp[0] = c;
-            tmp[1] = '\0';
             if (texto_tamanho(caminho) > 0)
-                texto_concatenar(caminho, " ");
-            texto_concatenar(caminho, tmp);
-            printf("%s NAO\n", caminho);
+                printf("%s NAO\n", caminho);
+            else
+                printf("NAO\n");
             return;
         }
         char tmp[3];
@@ -315,7 +312,9 @@ void trie_pesquisar(NoTrie *raiz, char *nome)
     }
     if (cur->fim)
     {
-        printf("%s SIM\n", caminho);
+        char b[MAX_LINHA_CSV];
+        formatar_restaurante(cur->restaurante, b);
+        printf("%s SIM %s\n", caminho, b);
     }
     else
     {
