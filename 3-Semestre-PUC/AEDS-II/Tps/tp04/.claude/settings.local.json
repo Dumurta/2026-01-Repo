@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(ls /home/eduardo/Documents/2026-01-Repo/3-Semestre-PUC/AEDS-II/Tps/)",
-      "Read(//home/eduardo/Documents/2026-01-Repo/3-Semestre-PUC/AEDS-II/Tps/**)"
-    ]
-  }
-}
