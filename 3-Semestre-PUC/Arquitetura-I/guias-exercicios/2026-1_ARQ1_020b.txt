@@ -1,0 +1,430 @@
+PUC-Minas - ICEI - Ciência da Computação
+Arquitetura de Computadores I - Aula 2026-1_020b
+
+Anotações
+
+___
+
+Resumo da semana
+
+Arquiteturas do tipo "load/store" (carga/armazenamento)
+
+1. Introdução
+
+Acessos à memória tornam um processador mais lento.
+Mesmo adicionando caches, isso apenas reduz 
+o tempo médio de acesso à memória.
+Ainda assim, há momentos em que o processador fica ocioso,
+enquanto aguarda a conclusão dos acessos à memória
+(Memory-Bound).
+
+Na arquitetura do tipo "load/store" (carga/armazenamento),
+o modo de endereçamento para cada operando é fixo.
+Portanto, não há bytes para informações 
+sobre modos de endereçamento.
+
+E, para instruções aritméticas/lógicas, 
+o modo de endereçamento para todos os operandos 
+será o modo registrador.
+ 
+Para transferir dados da/para a memória e 
+para/dos registradores (em número "suficiente"),
+há também instruções explícitas para mover dados.
+
+As instruções de carga servem para ler dados da memória e 
+os copiar para um registrador.
+
+As instruções de armazenamento servem para gravar dados 
+de um registrador na memória.
+
+2. Arquitetura MIPS 
+
+MIPS, acrônimo para "Microprocessor without Interlocked Pipeline
+Stages" (microprocessador sem estágios intertravados de pipeline), 
+é uma arquitetura de microprocessadores RISC 
+desenvolvida pela MIPS Computer Systems (1988).
+
+Os processadores MIPS são usados em aplicações tais como:
+
+- Computadores da Silicon Graphics;
+- sistemas embarcados;
+- dispositivos com Windows CE;
+- roteadores da Cisco;
+- videogames como Nintendo 64 e PlayStation.
+
+O MIPS é uma arquitetura baseada em registradores, ou seja, 
+a CPU usa apenas registradores para realizar suas operações
+aritméticas e lógicas.
+
+Processadores baseados no conjunto de instruções do MIPS 
+estão em produção desde 1988. Ao longo do tempo foram feitas
+várias melhorias no conjunto de instruções. 
+As diferentes revisões que foram introduzidas são 
+MIPS I, MIPS II, MIPS III, MIPS IV e MIPS V. 
+Cada revisão é um super conjunto de seus antecessores. 
+Quando a MIPS Technologies saiu da Silicon Graphics em 1998, 
+a definição da arquitetura foi alterada 
+para definir outros conjuntos de instruções: 
+MIPS32 de 32 bits e MIPS64 de 64 bits.
+
+Existem diversas extensões opcionais:
+
+- MIPS-3D, que é um conjunto simples de instruções SIMD 
+  de ponto flutuante, dedicado a tarefas comuns em 3D; 
+- MDMX (MaDMaX) que é um conjunto de instruções SIMD inteiras 
+  mais extenso usando os registradores 
+  de ponto flutuante de 64 bits; 
+- MIPS16e que adicionou compressão ao fluxo de instruções 
+  de modo que os programas ocupassem menos espaço na memória; 
+- MIPS MT, que adicionou capacidade multithreading ao MIPS.
+
+Um grupo liderado por David Patterson e Carlo Séquin, 
+em Berkeley, desenvolveu chips processadores; 
+para dar um nome a esse conceito eles utilizaram o termo 
+RISC, atribuindo ao chip desenvolvido por eles 
+nessa filosofia o nome RISC I, no ano de 1980. 
+Esse chip foi quase imediatamente seguido pelo RISC II, 
+projetado pelos mesmos dois pesquisadores. 
+
+Pouco mais tarde, em 1981, John Hennessy, pesquisador de Stanford, 
+universidade situada do outro lado da baía de San Francisco, 
+projetou e fabricou um chip diferente, ao qual deu o nome de MIPS.
+O conceito básico era aumentar muito o desempenho 
+com o uso de pipelines profundos para as instruções, 
+uma técnica que, embora boa, viria a revelar-se difícil 
+de se levar a cabo. 
+
+Geralmente, um pipeline divide a tarefa de executar 
+uma instrução em diversas etapas, executando, 
+de forma sobreposta, várias instruções ao mesmo tempo. 
+Porém, os projetos tradicionais da época esperavam 
+para terminar uma instrução inteira antes de seguir adiante, 
+deixando assim o processador sem fazer nada por boa parte do tempo
+enquanto uma instrução aguardava ser concluída.
+
+Exemplo
+
+O MIPS R2000 é uma arquitetura de carga/armazenamento.
+
+Registradores
+
+Existem 32 registradores de 32 bits 
+para operandos inteiros em complemento de dois; 
+os endereços são de 32 bits sem sinal.
+
+No código, a sintaxe geralmente usada é $x, 
+onde x é um valor no intervalo de 0 a 31.
+Existem, entretanto, notações alternativas ($yz).
+
+Exemplo: 
+$5 é o registrador 5 (ou $a1)
+
+Processadores MIPS usam a Arquitetura Modificada de Harvard 
+para melhoria de performance por redução de conflitos 
+de acessos à memória. 
+
+A memória é compartilhada por dados e instruções e 
+isso elimina a necessidade de caches separadas
+para cada uma delas. Entretanto a sincronização 
+deve ser cuidadosa para evitar corrupção de dados. 
+
+Protocolos eficientes para garantir coerência 
+são necessários ao bom funcionamento.
+
+Espaços de memória separados para dados e instruções
+
+                     +-----------------------------------------+
+                     |               _____________________     |
+      ____________   |              |     Aplicação       |    |
+     |            |  |              |   dados iniciais    |<-+ |
+SRAM | Aplicação  |<-| flash        |                     |  | | 
+     |            |  | (aplicação)  |---------------------|  | |
+     |  Memória   |<-|              |      Aplicação      |--+ |
+     |    de      |  |              |  leitura de dados   |----+
+     |   Dados    |  |              | acessos específicos |----+
+     |            |<-|              |      instruções     |--+ |
+I/O  |------------|  |              |---------------------|  | |  
+     |   MIMO     |  |              |         SuV         |<-+ |
+     |____________|  | flash        | apps de segurança   |<---+
+                   <-+ (bootloader) | instruções virtuais |<---+
+                                    | loader/verifier     |<---+
+                                    |_____________________|desvios
+     Memória de dados                Memória de instruções
+
+
+Mapa de memória   
+      ___________ 
+     |           |
+     |    ...    |
+     |===========|
+     |           |
+     |           |
+$fp  |  -------  |
+     |           |
+     |   stack   |
+     |           |
+$sp  |===========| Stack segment
+     |     |     |
+     |     v     |
+     |           |
+     |     ^     |
+     |     |     |
+     |===========|
+     |   dados   |
+     | dinâmicos |
+$gp  |-----------|
+     |   dados   |
+     | estáticos |
+     |===========| Data  segment
+     |           |
+     |  programa |
+     |           |
+     |___________| Code  segment
+     | reservado |
+     |___________|
+
+A segunda metade do espaço de endereçamento
+é reservada para operações de entrada-e-saída
+mapeadas em memória
+
+  
+Modos de endereçamento comumente usados
+
+Modo          Exemplo          Significado (RTL)
+
+Imediato      dadd R4, R4, 3   R[4] <- R[4]+3
+Registrador   dadd R4, R4, R3  R[4] <- R[4]+R[3]
+Direto        dadd R1, (1001)  R[1] <- R[1]+M[1001]
+Indireto      dadd R4, (R1)    R[4] <- R[4]+M[R[1]]
+Deslocamento  ld   R4, 100(R1) R[4] <- MEM[100+R[1]]
+Indexado      dadd R3, (R1+R2) R[3] <- R[3]+M[R[1]+R[2]]
+Indireto      dadd R1, @(R3)   R[1] <- R[1]+M[M[R[3]]]
+
+
+
+Tabela de registradores 
+
+Nome    No.   Uso           Preservado
+
+$zero   0     constante     não
+$at     1     reservado ASM ---
+$v0-$v1 2-3   resultados    não
+$a0-$a3 4-7   argumentos    sim
+$t0-$t7 8-15  temporários   não
+$s0-$s7 16-23 salvos        sim
+$t8-$t9 24-25 temporários   não
+$k0-$k1 26-27 reservados SO ---
+$gp     28    global        sim
+$sp     29    pilha         sim
+$fp     30    frame pointer sim
+$ra     31    endereço      sim
+              retorno
+
+Alguns registradores têm usos específicos:
+
+$0     sempre contém o valor 0 (constante).
+       Isso tem o efeito de reduzir
+       o número de instruções necessárias no
+       conjunto de instruções.
+
+$1     usado pelo montador (ASM)
+
+$2-3   para valores de retorno de funções
+
+$4-7   para parâmetros de funções
+
+$26-27 usados exclusivamente pelo SO
+
+$31    endereço de retorno de procedimentos
+
+Existem também 16 registradores de 64 bits usados
+para operandos de ponto flutuante.
+Em código, a sintaxe usada é $fx, 
+onde x é um valor par no intervalo de 0 a 30.
+
+Exemplo: 
+$f6 é o registrador 6.
+
+Alguns dos registradores de ponto flutuante 
+também têm usos específicos.
+
+
+Registradores especiais
+
+PC      Program Counter / Apontador de instrução
+HI e LO usados para armazenar resultados de operações
+        de multiplicação e de divisão;
+        não são diretamente endereçáveis,
+        os acessos são feitos por instruções especiais como
+        mfhi ("move from Hi")
+        mflo ("move from Lo")
+
+        
+Conjunto de instruções de três endereços
+
+O conjunto de instruções é consideravelmente menor 
+do que os conjuntos de instruções da Intel.
+Isso é típico de um processador RISC.
+
+Geralmente, há apenas uma maneira de realizar 
+uma operação necessária, não duas ou três
+como no x86 (Pentium).
+
+Instruções aritméticas e lógicas têm 3 operandos.
+
+Exemplo: 
+add $8, $9, $10
+
+Os conteúdos dos registradores $9 e $10 
+serão somados, e o resultado é colocado 
+no registrador $8.
+
+Para fazer o equivalente no x86 (Pentium), 
+seria necessário algo parecido com:
+
+mov eax, var1 ; eax <- var1
+add eax, var2 ; eax <- var1 + var2
+
+ou, se um adendo estivesse em ebx e o outro em ecx,
+
+o código poderia ser
+
+mov eax, ebx  ; eax <- ebx
+add eax, ecx  ; eax <- eax + ecx
+
+Observar que assim é possível usar menos instruções
+para realizar os mesmos cálculos 
+nesse conjunto de instruções de três endereços.
+
+
+Instruções de carga e armazenamento
+
+As únicas instruções que acessam a memória 
+para obter operandos são as instruções 
+de carga e armazenamento.
+
+Exemplos: 
+lw $14, 4($15)
+
+O endereço efetivo é dado pelo modo de endereçamento 
+por deslocamento de base (segundo operando). 
+4 somado ao conteúdo do registrador $15 é o endereço. 
+A referência de memória é para 1 palavra (32 bits)
+nesse endereço. A palavra lida é colocada no registrador $14.
+
+sb $10, 0($18)
+
+Endereço efetivo fornecido pelo modo de endereçamento 
+por deslocamento de base (segundo operando). 
+0 soamdo ao conteúdo do registrador $18 é o endereço. 
+O byte menos significativo do registrador $10 
+é escrito nesse endereço.
+
+Observações: 
+O primeiro operando é sempre o modo de registrador.
+O segundo  operando é sempre o modo de deslocamento de base.
+
+
+Instruções de controle
+
+Existem dois tipos de instruções de controle:
+
+- desvio (equivalente aos do Pentium)
+  condicional ou incondicional
+
+  A decisão de desviar (seguir o desvio ou não) é baseada
+  em uma comparação entre os valores em dois registradores.
+
+  (NÃO em códigos de condição!)
+
+  Um deslocamento da instrução seguinte ao desvio
+  é colocado na instrução.
+
+- desvio (incondicional)
+
+  Uma parte de um endereço absoluto é colocada na instrução.
+
+  Exemplo: 
+  beq $5, $13, label1
+
+  Desviar se igual. 
+  Se o conteúdo dos registradores $5 e $13 for o mesmo (igual),
+  ir para o rótulo 1.
+
+  jal proc4
+
+  Jump and Link. 
+  Uma instrução de chamada de procedimento muito semelhante 
+  à instrução call do x86 (Pentium).
+  O endereço de retorno é colocado no registrador $31/$ra 
+  (em x86 (Pentium) é preciso empilhar o endereço de retorno). 
+  Então, o endereço proc4 é colocado no PC.
+
+
+Código de máquina
+
+Todas as instruções de código de máquina 
+têm exatamente 32 bits de comprimento (SEM EXCEÇÕES!).
+
+Existem apenas alguns formatos básicos:
+
+- instruções aritméticas e lógicas (tipo-R)
+   ________________________________________ 
+  | 31 26  | 25 21 | 20 16 | 15 11 | 10 0  |
+  |--------|-------|-------|-------|-------|
+  | 6 bits |   5   |   5   |   5   |  11   |
+  |--------|-------|-------|-------|-------|
+  | opcode |  rs   |  rt   |  rd   | extra |
+  |________|_______|_______|_______|_______|
+  
+  Como não há informações sobre o modo de endereçamento 
+  (todos os operandos serão usados em modo de registrador), 
+  uma especificação de operando utiliza apenas 5 bits 
+  para indicar qual registrador será usado.
+
+  Exemplos: 
+
+  add $8,  $10, $12
+  sub $12,  $8, $15
+
+  or  $10, $11, $12
+
+- load/store, operações aritméticas/lógicas
+  com um operando como valor imediato
+  e todas as instruções de desvio (tipo-I)
+   ________________________________________ 
+  | 31 26  | 25 21 | 20 16 |     15 0      |
+  |--------|-------|-------|---------------|
+  | 6 bits |   5   |   5   |      16       |
+  |--------|-------|-------|---------------|
+  | opcode |  rs   |  rd   |   imediato    |
+  |________|_______|_______|_______________|
+  
+  Observar que a localização do opcode e 
+  as localizações dos registradores estarão sempre
+  nos mesmos lugares dentro de uma instrução de 32 bits
+  (ortogonalidade). 
+  Isso facilita a decodificação da instrução
+  (ou seja, torna-a mais rápida, requer menos circuitos).
+
+  Exemplos: 
+  lw   $20, 12($16)
+  addi $12, $8, -6
+  bne  $13, $14, LABEL_0
+
+- instruções para desvio (tipo-J)
+   ________________________________________ 
+  | 31 26  | 25 21 |         20 0          |
+  |--------|-------|-----------------------|
+  | 6 bits |   5   |          21           |
+  |--------|-------|-----------------------|
+  | opcode |  rs   |       endereço        |
+  |________|_______|_______________________|
+  
+  Exemplos: 
+  j   LOOP_0      ; repetição
+  jal My_Function ; chamada de função
+
+
+---
+

@@ -1,0 +1,482 @@
+PUC-Minas - ICEI - Ciência da Computação
+Arquitetura de Computadores I - Aula 2026-1_18b
+
+Anotações
+
+___
+
+Resumo da semana
+
+Arquiteturas voltadas para pilhas
+Stack Machines / Máquinas Virtuais (VM)
+
+
+Abstrações de arquitetura - Níveis de Programação
+
+- Programação por linguagem estruturada / orientada a objetos
+  instruções independentes do processador
+
+- Programação em  linguagem de montagem
+  instruções específicas   do processador
+
+___
+
+Linguagem de Alto Nível
+ e Sistema Operacional
+          |
+          | compilador 
+          v
+   Máquina Virtual
+          |
+          | tradutor VM 
+          v
+Linguagem de Montagem (Assembly)
+          |
+          | montador (Assembler) 
+          v
+ Linguagem de Máquina        ----  
+          |
+          | registradores          Nível do Hardware
+          v
+Plataforma de Hardware       ----    
+          |
+          | portas lógicas 
+          v
+      Circuitos
+          |
+          | transistores 
+          v
+  Plataforma Física
+
+___
+
+Modelos de Compilação
+
+Compilação direta = n * m tradutores
+
+linguagem_1   linguagem_2 ... linguagem_n
+     |    \        |        /     |
+     | +---\-------+-------/----+ |
+     +-|----\------|------/-+   | |
+     | |  +--\-----|-----/---\--|-+
+     | | /    \    |    /     \ | |
+ hardware_1   hardware_2      hardware_m
+   (CISC)       (RISC)        (emulador)
+
+   
+Compilação em dois níveis = n + m tradutores
+
+linguagem_1 linguagem_2 ... linguagem_n
+ hardware_1  hardware_2      hardware_m
+          \       |       /        
+           \      |      /
+       linguagem intermediária
+           /      |      \
+          /       |       \
+hardware_1    hardware_2     hardware_m
+  (CISC)        (RISC)       (emulador)
+
+___
+
+Máquina Virtual
+
+emulação de um sistema computacional 
+(real ou hipotético)
+
+- Sistema Virtual       (ex.: VirtualBox)
+  = substituto completo (S.O.)
+
+- Processamento Virtual (ex.:  JVM)
+  = ambiente abstrato e independente de plataforma
+
+            Java
+          (código)
+             |
+             | compilador (javac)
+             v
+         bytecode (.class)
+             |
+  -----------+-----------
+ |           |           |
+JVM         JVM         JVM
+ ^           ^           ^
+ |           |           | (JRE)
+ v           v           v
+Windows    Linux        Mac
+
+          Python
+             | 
+             v
+          bytecode
+             | PVM
+             v
+      máquina hospedeira
+
+             C#
+             | compilador  (front end)
+             | Intermediate   Language
+             v
+          IL code 
+             | CLR (.NET)  (back  end)
+             | Common Language Runtime
+             v
+      máquina hospedeira
+
+___
+
+História
+
+1970's: p-Code    (Pascal)
+1990's: JVM       (Java,Kotlin,Scala,Groovy,Clojure)
+2000's: Microsoft .NET
+
+___
+
+Abordagens
+
+- engenharia de software abstrata
+  modelo de alto nível mais próximo de linguagem de alto nível
+  (dispensa a implementação em hardware)
+
+- engenharia de software prática
+  a divisão em níveis permite melhor gestão do código
+  (segurança aprimorada)
+
+- desenvolvimento pragmático de compilador
+  é mais fácil de se construir
+
+- distribuição com baixo investimento
+  escrever o código em alto nível uma vez só
+  e usar em diferentes plataformas 
+  com pouca ou nenhuma modificação
+
+___
+
+Máquinas Virtuais Orientadas para pilhas
+
+- pilha para avaliações de expressões
+  avaliação de expressões aritméticas ou lógicas
+  infixas, prefixas, posfixas
+- pilha para endereços de retorno 
+  chamadas de subrotinas e 
+  recursão
+- pilha para variáveis locais
+  estruturas de dados e
+  contextos (global e local) para variáveis
+  guardados em diferentes segmentos de memória
+- pilhas para passagens de parâmetros
+  registradores e apontadores não permitem reentrância
+- combinações de recursos e pilhas
+  pilha com registros de ativação ("frames")
+  substituição da pilha de avaliação por registradores  
+  
+___
+
+Contextos 
+- nível de classe  (programação orientada a objetos)
+  variáveis estáticas
+  variáveis privadas
+
+- nível de métodos (programação estruturada)
+  variáveis globais
+  variáveis locais
+  argumentos/passagens de parâmetros
+
+___
+
+Vantagens
+
+- portabilidade de código
+  compilar para várias plataformas
+- interoperabilidade
+  diferentes linguagens podem compartilhar a mesma VM
+- usar bibliotecas comuns
+- mobilidade: Internet, "cloud"
+- melhor gestão de código:
+  segurança, 
+  verificação de limites de arranjos e seus índices,
+  acréscimos ao código (add-ons)
+- facilidade para se desenvolver novas linguagens
+
+Desvantagem
+
+- performance (5-20x mais lenta)
+  - análise isolada de cada instrução
+  - previsão de desvios mais complexa
+
+___
+
+Exemplos de aplicações
+
+- processamento paralelo   (com linguagens funcionais)
+- processamento de imagens (reconhecimentos)
+- computação gráfica       (primitivas e movimentações de blocos de bits)
+- controle de dispositivos periféricos
+- controle de processos    (monitoramento, tempo real)
+- controladores de robôs   (juntas, mobilidade)
+- controle automotivo      (ignição eletrônica, alarmes, painéis)
+- filtros digitais         (cálculos com altas taxas de fluxo de dados)
+- telecomunicações         (compressão e transmissão de dados)
+- entretenimento           (MIDI, smartTVs, games)
+- usos militares, aeronáuticos e espaciais
+
+--------------------------------------------------------------------------------
+
+IJVM - Integer Java Virtual Machine (Mic-1 - Tanenbaum)
+
+ ______________________________________
+|                        _______       |    ___________
+|                       |       |      |   /  Decoder  \________
+|                  +----|  MAR  |---|>-+  /_____________\       |
+|                  |    |_______|   |_____||||||||||            |
+|     _________    |     _______           |||||||||       _____|_____
+|    |         |---|----|       |          |||||||||      |    ROM    |
++----|  RAM_1  |   +----|  MDR  |---|>-+   |||||||||      | Microcode |
+  +--|_________|   |  +-|_______|   |__|___|||||||||      |___________|
+  | +--------------|--+  _______       |    ||||||||       | | | | | |
+  | |              |    |       |      |    ||||||||       | | | | | |
+  | |              +----|  PC   |-+-|>-|    ||||||||       | | | | | |
+  | +--------------|----|_______| | |__|____||||||||       | | | | | |
+ _|_|______________|______________|    |     |||||||       | | | | | |
+| | |  _________   |     _______       |     |||||||       | | | | | |
+| | | |         |  |    |       |      |     |||||||       | | | | | |
++-|-|-|  RAM_2  |--|----|  MBR  |---|>-|     |||||||       | | | | | |
+  +-|-|_________|  |  +-|_______|   |__|_____|||||||       | | | | | |
+  | +--------------|--+  _______       |      ||||||       | | | | | |
+  | |              |    |       |      |      ||||||       | | | | | |
+  | |              +----|  SP   |---|>-|      ||||||       | | | | | |
+  | +--------------|----|_______|   |__|______||||||       | | | | | |
+  | |              |     _______       |       |||||       | | | | | |
+  | |              |    |       |      |       |||||       | | | | | |
+  | |              +----|  TOS  |---|>-|       |||||       | | | | | |
+  | +--------------|----|_______|   |__|_______|||||       | | | | | |
+  | |              |     _______       |        ||||       | | | | | |
+  | |              |    |       |      |        ||||       | | | | | |
+  | |              +----|  CPP  |---|>-|        ||||       | | | | | |
+  | +--------------|----|_______|   |__|________||||       | | | | | |
+  | |              |     _______       |         |||       | | | | | |
+  | |              |    |       |      |         |||       | | | | | |
+  | |              +----|  LV   |---|>-|         |||       | | | | | |
+  | +--------------|----|_______|   |__|_________|||       | | | | | |
+  | |              |     _______       |          ||       | | | | | |
+  | |              |    |       |      |          ||       | | | | | |
+  | |              +----|  OPC  |---|>-|          ||       | | | | | |
+  | +--------------|----|_______|   |__|__________||       | | | | | |
+  | |              |     _______       |           |       | | | | | |
+  | |              |    |       |      |           |       | | | | | |
+  | |              +----|   H   |---|>-|           |       | | | | | |
+  | +--------------|----|_______|   |__|___________|       | | | | | |
+  | |              |         |_        |                   | | | | | |
+  | |              | C      A _|___ ___|_ B  (buses)       | | | | | |
+  | |              |         |     V     |_________________| | | | | |
+  | |              |    +-----\   ALU   /____________________| | | | |
+  | |              |    |      \_______/                       | | | |
+  | |              |    |      ____|____                       | | | |
+  | |              |    |     |         |______________________| | | |
+  | |              |    |     | Shifter |________________________| | |
+  | |              |    |     |_________|                          | |
+  | |              |____|__________|                               | |
+  | |___________________|__________________________________________| |
+  |__________________________________________________________________|
+
+___
+  
+Datapath
+
+Barramentos
+
+A Bus - para dado no registrador H (uma entrada para ALU)
+B Bus - outra entrada para a ALU (a partir de outros registradores)
+C Bus - retorno da  saída da ALU para os registradores
+
+Registradores
+
+MAR  - Memory Address Register
+MDR  - Memory Data Register
+PC   - Program Counter
+MBR  - Memory Buffer Register
+SP   - Stack Pointer
+LV   - Local Variable pointer
+CPP  - Constant Pool Pointer
+TOS  - Top of Stack register
+OPC  - OpCode register (auxiliar)
+H    - Holding register
+
+___
+
+IJVM - Modelo de memória
+
+ ___________  <- SP
+|           | 
+|   Stack   |
+|           |     
+|-----------|
+|   Local   |
+| Variable  |
+|   Frame   |
+|-----------| <- LV
+|  Constant |
+|    Pool   |
+|-----------| <- CPP
+|           |
+|  Method   |
+|           |
+|___________| <- PC
+
+
+Operand Stack (SP = Stack Pointer)
+- alocação diretamente acima de Local Variable (LV)
+
+Local Variable Frame (LV = Local Variable)
+- cada chamada a um método será uma alocação
+  para armazenamento de variáveis durante uso  
+- LV apontará para o primeiro endereço reservado
+
+Constant Pool (CPP)
+- área que não poderá ser escrita pelo programa
+  e que conterá constantes, strings e apontadores
+- CPP apontará para o primeiro endereço usado
+
+Method Area (PC)
+- conterá o programa propriamente dito
+- conterá um arranjo de bytes
+
+___
+
+IJVM Instruction Set
+
+Opcode  Assembly     Operandos            Descrições
+(Hex)   Language
+       Mnemônicos
+
+0x10    BIPUSH        byte                colocar byte na pilha
+0x59    DUP           N/A                 duplicar o conteúdo no topo da pilha
+0xA7    GOTO          label               desvio incondicional
+0x60    IADD          N/A                 desempilhar dados e colocar a soma no topo da pilha
+0x7E    IAND          N/A                 desempilhar dados e colocar a conjunção (AND) no topo da pilha
+0x99    IFEQ          label               desempilhar dados e desviar se zero
+0x9B    IFLT          label               desempilhar dados e desviar se menor que zero
+0x9F    IF_ICMPEQ     label               desempilhar dados e desviar se forem iguais
+0x84    IINC          variable, byte      somar valor constante a variável local
+0x15    ILOAD         variable            empilhar variável local 
+0xB6    INVOKEVIRTUAL method              chamar método
+0x80    IOR           N/A                 desempilhar dados e colocar a disjunção (OR) no topo da pilha
+0xAC    IRETURN       N/A                 retornar de método com valor
+0x36    ISTORE        variable            desempilhar dados e guardar em variável local
+0x64    ISUB          N/A                 desempilhar dados e colocar a diferença no topo da pilha
+0x13    LDC_W         constant            empilhar constante (na área indicada por CPP) no topo da pilha
+0x00    NOP           N/A                 não fazer coisa alguma
+0x57    POP           N/A                 desempilhar dados
+0x5F    SWAP          N/A                 trocar dados no topo da pilha
+0xC4    WIDE          N/A                 prefixo para indicar que a próxima instrução será de 16 bits
+N/A     ERR           N/A                 exibir mensagem de erro e parar
+N/A     HALT          N/A                 parar
+N/A     IN            N/A                 receber dado da entrada e colocar no topo da pilha
+N/A     OUT           N/A                 desempilhar e mostrar dados 
+
+___
+
+Modelo de programação (IJVM = Mic-1)
+
+.constant
+    OBJREF 0x40       // valor para exemplo
+.end-constant
+
+.main
+    
+    LDC_W OBJREF      // empilhar referência para objeto
+
+    BIPUSH 0x03       // empilhar parâmetros na pilha
+    BIPUSH 0x04
+                      // chamar método
+    INVOKEVIRTUAL add
+
+    BIPUSH 0x30       // converter para dígito ASCII
+    IADD              // somar fator de conversão
+    OUT               // mostra resultado no topo da pilha
+
+    HALT              // parar
+    
+.end-main
+
+.method add(num1, num2)
+
+    ILOAD num1        // carregar o primeiro dado 
+    ILOAD num2        // carregar o segundo  dado
+    IADD              // somar e colocar a soma no topo da pilha
+
+    IRETURN           // retornar (resultado estará no topo da pilha)
+
+.end-method
+
+___
+
+Exemplo para alternativa dupla
+
+  i = j + k;
+  if ( i==3 )
+     k = 0;
+  else
+     j = j-1;
+
+  Java                  IJVM Assembly    IJVM ISA Code
+
+  i = j + k ;              ILOAD  j      0x15 0x02
+                           ILOAD  k      0x15 0x03
+                           IADD          0x60
+                           ISTORE i      0x36 0x01
+  if ( i == 3 )            ILOAD  i      0x15 0x01
+                           BIPUSH 3      0x10 0x03
+                           IF_ICMPEQ L1  0x9F 0x00 0x0D
+    j = j - 1 ;            ILOAD  j      0x15 0x02
+                           BIPUSH 1      0x10 0x01
+                           ISUB          0x64
+                           ISTORE j      0x36 0x02
+                           GOTO   L2     0xA7 0x00 0x07
+                    L1:    BIPUSH 0      0x10 0x00
+    k = 0;                 ISTORE k      0x36 0x03
+                    L2:
+
+___
+
+Evolução da pilha durante a execução
+
+              k                       3
+        j     j   (j+k)         i     i
+_____ _____ _____ _____ _____ _____ _____ _____
+  0     1     2     3     4     5     6     7  
+
+        1                                      
+  j     j   (j-1)                0             
+_____ _____ _____ _____ _____ _____ _____ _____
+  8     9    10     11   12     13   14    15  
+
+___
+
+Exemplo para repetição com teste no início
+
+while( w < MAX_VALUE )
+{
+  w = w + x ;
+}
+z = 6;
+
+ l_loop_compare:
+     ILOAD  w
+     LDC_W  MAX_VALUE
+     ISUB
+     IFLT   l_loop_body
+     GOTO   l_loop_end
+
+l_loop_body:
+     ILOAD  w
+     ILOAD  x
+     IADD
+     ISTORE w
+     GOTO   l_loop_compare
+
+l_loop_end:
+     BIPUSH 0x06
+     ISTORE z
+
+--------------------------------------------------------------------------------

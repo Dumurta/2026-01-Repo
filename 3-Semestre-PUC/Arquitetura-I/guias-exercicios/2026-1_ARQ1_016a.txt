@@ -1,0 +1,155 @@
+PUC-Minas - ICEI - Ciência da Computação
+Arquitetura de Computadores I - Aula 2026-1_016a
+
+Anotações
+
+___
+
+01. Hierarquia de memória
+
+Custo            Velocidade                      Capacidade
+  ^     Controle     ^                                |
+  |      U.L.A.      | [300ps] registradores [100B]   |
+  |                  |                                |
+  |                  |            cache               |
+  |                  | [001ns]      L1       [100kB]  |
+  |                  | [003ns]      L2       [ 01MB]  |
+  |                  | [012ns]      L3      [16-32MB] |
+  |                  | [042ns]      L4     [64-128MB] |
+  |                  |                                |
+  |     Memória      |             ROM                |
+  |    Principal     | [060ns]     RAM      [1-16GB]  |
+  |                  |                                |
+  |                  |            flash               |
+  |                  |                                |
+  |                  | [060us]     SSD        [1TB]   |
+  |                  |                                |
+  |     Memória      |        cache de disco          |
+  |    Secundária    | [003ms]    disco     [6-10TB]  |
+  |                  |       fitas magnéticas         v
+
+___
+
+02. Memórias
+
+02.1 Tipos de memórias
+
+Tipo de memória Operação    Apagamento    Escrita     Volatilidade
+RAM             leitura      elétrico/    elétrica       volátil
+               e escrita       byte                   (temporária)
+ROM             leitura   (indisponível) por máscara
+PROM            leitura   (indisponível)  elétrica     não volátil
+EPROM           leitura    ultravioleta/  elétrica     não volátil
+                               chip                 (microprogramação)
+EEPROM          leitura      elétrico/    elétrica     não volátil
+             (preferencial)    byte                 (microprogramação)
+flash           leitura      elétrico/    elétrica     não volátil
+             (preferencial)   bloco                 (microprogramação)
+
+
+02.2 Tipos de memórias RAM's:
+
+RAM dinâmica                      RAM estática
+
+necessita refrescamento           dispensa refrescamento
+construção simples                construção complexa
+menor área/bit                    maior área/bit
+mais  barata                      mais  cara
+mais  lenta                       mais  rápida
+memória principal                 memória cache
+
+___
+
+03. Mapeamento da memória principal
+    para execução de programa (C/C++)
+ 
+ _____________ 
+|             |
+|    S. O.    |    // dados sobre o ambiente
+|             |    // parâmetros da linha de comandos
+|    . . .    |
+|_____________| <- área dinâmica
+|    Stack    | <- execução de métodos
+|             |
+|  (métodos)  |
+|             |
+|-------------|
+|      |      |    // progressão do Stack
+|      v      |
+| Área Livre  |    // Extra Segment (ES)
+|      ^      |
+|      |      |    // progressão do Heap
+|-------------|
+|    Heap     |
+|             |
+|   (dados)   |
+|             |
+|=============| <- alocação de dados
+|             | <- área estática
+|    Dados    |
+|     Não     |
+|Inicializados|    // Data  Segment (DS)
+|             |
+|-------------|
+|             |
+|    Dados    |
+|Inicializados|
+|             |
+|-------------|
+|             |
+| Constantes  |
+|             |
+|-------------|
+|             |
+|   Código    |    // Base  Segment (BS)
+|_____________| <- programa
+|             |
+|   Device    |    // I/O   Controllers
+|   drivers   |
+|_____________|
+|             |
+|    BIOS     |    // ROM
+|_____________|
+
+___
+
+04. Detalhamento da pilha (Stack) para execução de métodos
+
+ ________________________ <- endereço mais elevado (início)
+| parâmetros da  função  |       |
+|------------------------|       |
+| endereço   de  retorno |       |
+|------------------------|       |  Stack Frame  ( 1 )
+| topo da pilha anterior |       |
+|------------------------|<-+    |
+|       dados locais     |  |    |
+|------------------------|  | <--+
+| parâmetros da  função  |  |    |
+|------------------------|  |    |
+| endereço   de  retorno |  |    |
+|------------------------|  |    |  Stack Frame  ( 2 )
+| topo da pilha anterior ---+    |
+|------------------------|<-+    |
+|       dados locais     |  |    |
+|------------------------|  | <--+
+| parâmetros da  função  |  |    |
+|------------------------|  |    |
+| endereço   de  retorno |  |    |
+|------------------------|  |    |  Stack Frame  ( 3 )
+| topo da pilha anterior ---+ <---- Frame Pointer (FP)
+|------------------------|       |
+|       dados locais     |       |
+|------------------------|<- endereço menos elevado (fim)
+|                        |<- topo = Stack Pointer    (SP)
+|           ...          |       |
+|                        |       |
+|________________________|       V  direção de avanço
+
+
+Stack Pointer (SP) = topo da pilha para execução
+Frame Pointer (FP) = referência para o topo anterior
+                     ajuda a localizar os parâmetros,
+                     o endereço de retorno e
+                     a área de dados locais
+   
+___

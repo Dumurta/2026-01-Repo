@@ -1,0 +1,231 @@
+PUC-Minas - ICEI - Ciência da Computação
+Arquitetura de Computadores I - Aula 2026-1_019a
+
+Anotações
+
+___
+
+Resumo da semana
+
+Arquiteturas voltadas para registradores
+
+Geração de programa
+
+Código
+
+texto       program.c
+               |
+               |  gcc  ( compilador )
+               |
+texto       program.s
+               |
+               |  as   (  montador  )
+               |
+binário     program.o
+               |
+        linker + (static libraries .a)
+               |
+binário     program.exe
+
+___
+
+Tipos de dados
+
+Nome    Sufixo   bits
+nibble             4
+byte      (b)      8
+word      (w)     16
+dword    (l|d)    32
+qword     (q)     64
+
+___
+
+Registradores
+
+Registrador     Espelho
+rax  eax        r8   r8d    (AC)
+rbx  ebx        r9   r9d   (data)
+rcx  ecx        r10  r10d  ( tmp)
+rdx  edx        r11  r11d  (data)
+
+rsi  esi        r12  r12d  (source)
+rdi  edi        r13  r13d  (destination)
+
+rsp  esp        r14  r14d   (SP)
+rbp  ebp        r15  r15d  (data)
+
+rip                         (PC)
+
+|<----------------- rax --------------------->| (64)
+                        |<------ eax -------->| (32)
+                                    |<-- ax ->| (16)
+                                    | ah | al | (08)
+ ___________ ___________ ___________ _________
+|___________|___________|___________|____|____|
+
+
+32-bit     16-bit     8-bit     8-bit    Uso
+
+eax         ax        ah        al       acumulador
+ecx         cx        ch        cl       contador
+edx         dx        dh        dl       dados
+ebx         bx        bh        bl       base
+esi         si                  sil      source      index (1)
+edi         di                  dil      destination index (1)
+esp         sp                  spl      stack pointer     (1)
+ebp         bp                  bpl      base  pointer     (1)
+
+(1) somente em modo 64
+
+___
+
+Registradores de segmentos de memória
+
+ID     Segmento
+CS     código
+DS     dados
+SS     pilha
+ES     extra
+FS     extra
+GS     extra
+
+___
+
+Registrador de status (FLAGS)
+
+Bit  ID     32-bits EFLAG Register
+
+21   ID     Flag                      (ID)  (system)
+20   VIP    Virtual Interrupt Pending (VIP) (system)
+19   VIF    Virtual Interrupt Flag    (VIF) (system)
+18   AC     Alignment check           (AC)  (system)
+17   VM     Virtual 8086 Mode         (VM)  (system)
+16   RF     Resume Flag               (RF)  (system)
+14   NT     Nested Task               (NT)  (system)
+13   IOPL   I/O Privilege Level       (IOPL)(system)
+12   IOPL   (extension)
+11   OF     Overflow  Flag            (OF)  (system)
+10   DF     Direction Flag            (DF)  (system)
+09   IF     Interrupt Enable Flag     (IF)  (system)
+08   TF     Trap Flag                 (TF)  (system)
+
+07   SF     Sign Flag                 (SF)  (status)
+06   ZF     Zero Flag                 (ZF)  (status)
+04   AF     Auxiliary Carry Flag      (AF)  (status)
+02   PF     Parity Flag               (PF)  (status)
+00   CF     Carry Flag                (CF)  (status)
+
+Bits 01, 03, 05, 15 e de 22 a 31 são reservados.
+
+___
+
+Registradores especiais
+
+MM0  a MM7
+XMM0 a XMM7
+
+___
+
+Memória e endereçamento
+
+Pilha (stack) durante chamada de métodos
+
+Stack
+^
+| ESI salvo        <-- esp
+| EDI salvo
+| variável local 3
+| variável local 2
+| variável local 1    [ebp]-4
+| EBP salvo        <-- ebp
+
+| endereço de retorno
+| parâmetro 1
+| parâmetro 2
+| parâmetro 3
+v
+endereços mais altos
+
+___
+
+Modos de endereçamento
+
+Tipo        Forma        Operando                 Modo
+
+Imediato    $D           D                        Imediato
+Registrador Ea           R[Ea]                    Registrador
+Memória     D            M[D]                     Absoluto
+Memória    (Ea)          M[R[Ea]]                 Indireto
+Memória     D(Eb)        M[D + R[Eb]]             Base + deslocamento
+Memória    (Eb, Ei ),    M[R[Eb] + R[Ei]]         Indexado
+Memória     D(Eb, Ei ),  M[D + R[Eb] + R[Ei]]     Indexado
+Memória    (, Ei, s)     M[R[Ei] · s]             Indexado e escalado
+Memória     D(, Ei, s)   M[D + R[Ei] · s]         Indexado e escalado
+Memória    (Eb, Ei, s),  M[R[Eb] + R[Ei] · s]     Indexado e escalado
+Memória     D(Eb, Ei, s) M[D + R[Eb] + R[Ei] · s] Indexado e escalado
+
+O fator de escala (s) somente pode ser: 1, 2, 4, 8.
+
+___
+
+Notações para referência à memória
+
+AT&T	                             Intel
+SECTION:DISP(BASE, INDEX, SCALE)     SECTION:[BASE + INDEX*SCALE + DISP]
+
+movl 4(%ebp), %eax                   mov eax, [ebp+4]
+addl (%eax,%eax,4), %ecx             add ecx, [eax + eax*4]
+movb $4, %fs:(%eax)                  mov fs:eax, 4
+movl _array(,%eax,4), %eax           mov eax, [4*eax + array]
+movw _array(%ebx,%eax,4), %cx        mov cx,  [ebx + 4*eax + array]
+
+___
+
+Instruções mais frequentemente usadas
+
+Categoria	    Instruções  	                    Descrição
+
+Movimentaçãor   mov{b,w,(l|d),q}    source, dest    mover de/para
+                xchg{b,w,(l|d),q}    dest1, dest2   trocar
+                cmpxchg{b,w,(l|d),q} dest1, dest2   comparar e trocar
+                push/pop{w,(l|d),q}                 push/pop da pilha (stack)
+                movsb                               mover de DS:RSI para ES:(R|E)DI,
+                                                    geralmente com prefixo (rep)
+
+Aritmética      add/sub{b,w,(l|d),q} source, dest   somar/subtrair
+                imul/mul{b,w,(l|d),q}     formats   multiplicar (com/sem sinal)
+                idiv/div{b,w,(l|d),q}     dest      dividir     (com/sem sinal)
+                inc/dec/neg{b,w,(l|d),q}  dest      incremento/decremento/negação
+                cmp{b,w,(l|d),q} source1, source2   comparar
+
+Lógica          and/or/                             and/or/
+                xor/not{b,w,(l|d),q} source, dest   /xor/not lógicos
+                sal/sar{b,w,(l|d),q}      formats   deslocamentos (aritméticos)
+                shl/shr{b,w,(l|d),q}      formats   deslocamentos (  lógicos  )
+
+Controle        jmp  address                        desvio incondicional
+                call address                        salvar    o (R|E)IP na pilha e desviar
+                ret                                 retornar ao (R|E)IP salvo pela chamada
+                leave                               restaurar   (R|E)BP da pilha; remover stack frame
+                j{e,ne,l,le,g,ge} address           desviar caso {=,!=,<,<=,>,>=}
+                loop address                        decrementar (R|E)CX; desviar se igual a zero
+                rep{e,ne}                           repetir operação com string
+                int  number                         interrupção por software
+                iret                                retornar de interrupção; voltar EFLAGS da pilha
+
+Outras instruções
+
+AVX/AVX2/AVX-512: 
+Para tratar arranjos com acessos a múltiplos dados simultaneamente,
+essenciais para multimídia, jogos e IA.
+
+SSE (Streaming SIMD Extensions): 
+Para processamento de áudio, vídeo e gráficos 3D.
+
+VT-x (Intel Virtualization Technology): 
+Para acelerar a criação e execução de máquinas virtuais e Hyper-V.
+
+AES-NI: 
+Para acelerar criptografia e descriptografia por hardware.
+
+___

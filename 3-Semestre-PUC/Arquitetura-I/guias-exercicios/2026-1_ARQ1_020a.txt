@@ -1,0 +1,122 @@
+PUC-Minas - ICEI - Ciência da Computação
+Arquitetura de Computadores I - Aula 2026-1_020a
+
+Anotações
+
+___
+
+Resumo da semana
+
+Paralelismo
+
+Modelo de programação paralela 
+= Abstração de arquitetura paralela de computadores 
+
+Formas para implementação:
+
+1. biblioteca adaptada para uma linguagem de programação sequencial
+2. extensão de uma linguagem de programação convencional
+3. linguagem de programação nova, naturalmente paralela.
+
+Categorias de modelos de programação:
+
+1. interação de processos
+   relativa aos mecanismos para comunicações entre processos paralelos 
+
+   1.1 pelo uso eficiente de memória compartilhada
+   - espaço global onde pode haver leitura e escrita de modo assíncrono,
+     conflitos evitados por intertravamentos, semáforos e monitores
+     (exemplos: Cilk, CUDA, OpenMP)
+
+   - processadores convencionais com vários núcleos
+     e suporte nativo à memória compartilhada
+ 
+   1.2 por trocas de dados através de mensagens
+       - assíncronas
+         mensagem enviada sem que o receptor esteja pronto para receber 
+         CSP (Communicating Sequential Processes)
+         (exemplos: D, Erlang, Scala)
+         
+       - síncronas
+         mensagem enviada quando o receptor estiver pronto para receber
+         modelo de atores
+         (exemplos: Ada, Go, Occam, VerilogCSP)
+         
+   1.3 por interação implícita 
+       dependente do compilador e/ou do ambiente de execução 
+       linguagens de programação funcionais 
+       (exemplos: Concurrent Haskell, Concurrent ML) 
+
+2. decomposição de problemas em processos executáveis paralelamente
+
+   2.1 Paralelismo de tarefas
+       foco na execução de processos ou threads
+       comunicação por trocas de mensagens ou sinais em circuitos
+       (exemplos: Verilog, VHDL)
+ 
+   2.2 Paralelismo de dados
+       foco na execução de operações sobre grupos de dados
+       trabalhados de modo independente
+       (exemplo: Tensorflow)
+ 
+   2.3 Paralelismo implícito
+       dependente do compilador 
+       (paralelismo em nível de instruções em arquiteturas superescalares).
+
+
+Tipos de paralelismo
+
+- ao nível de bits: 
+  aumento da palavra do processador, 
+  para executar operações com dados maiores que o comprimento da mesma
+
+- ao nível de instrução: 
+  otimização de passos básicos para o tratamento de uma instrução
+  arquitetura superescalar (pipeline): 
+    busca            (IF – instruction fetch), 
+    decodificação    (ID – instruction decode), 
+    execução         (EX – execute), 
+    acesso à memória (MEM) e 
+    reescrita        (WB – writeback)
+    
+- de dados: 
+  distribuição de dados entre diversos nodos computacionais 
+  com processamento em paralelo
+  
+- de tarefas: 
+  execução de processamentos diferentes sobre um conjunto de dados ou 
+  sobre diferentes conjuntos de dados
+  
+  
+Taxonomia segundo Flynn
+
+SISD - Single Instruction - Data Single Data
+- apenas uma sequência de instruções pode ser executada 
+  por uma unidade de controle durante um ciclo de clock
+- apenas uma sequência de dados pode ser usada 
+  como entrada durante um ciclo de clock
+  Tipo de computador: mainframes, minicomputadores 
+                      e a maioria dos computadores atuais
+
+SIMD - Single Instruction – Multiple Data
+- apenas uma sequência de instruções pode ser executada 
+  em todas as unidades de controle durante o mesmo ciclo de clock
+- apenas uma sequência de dados pode ser usada 
+  como entrada durante o mesmo ciclo de clock
+  Tipo de computador: arranjos de processadores, pipelines vetoriais, 
+                      processadores com GPU’s
+
+MISD - Multiple Instruction – Single Data
+- sequências independentes de instruções podem ser executadas 
+  em todas as unidades de controle durante o mesmo ciclo de clock
+- apenas uma sequência de dados pode ser usada 
+  como entrada durante um ciclo de clock
+  Tipo de computador: Carnegie-Mellon C.mmp Computer (1971)
+
+MIMD - Multiple Instruction – Multiple Data
+- sequências independentes de instruções podem ser executadas 
+  em todas as unidades de controle durante o mesmo ciclo de clock
+- sequências independentes de dados podem ser usadas como entrada 
+  durante um ciclo de clock
+  Tipo de computador: supercomputadores, clusters, grids, 
+                      computadores com múltiplos núcleos

@@ -1,0 +1,34 @@
+// Factorial of an 8bit number calling IMUL function
+// Manually store 1st number in the memory location 0050h
+// Result is stored in 0051h
+//
+// FAT  - Function FAT    // D = FAT (B)
+// @return A
+// @param  B
+// @param  C
+//
+               JMP MAIN     // function area detour
+                            // function IMUL( ) {
+IMUL:          MOV E,B      //   E = B       // save parameter
+               MVI A,00     //   A = 0
+                            //   while ( E>0 ) {
+LOOP:          ADD D        //     A = A+D
+               DCR E        //     E = E-1
+               JNZ LOOP     //   }
+               MOV D,A      //   D = A
+               RET          //   return value at D
+	                        // }
+                            //
+                            // main ( ) {
+MAIN:          LXI SP,00A6  //   SP = 00A6h // stack
+               LXI H,0050   //   HL = 0050h  // datum
+               MOV B,M      //   B  = MEM [HL]
+               MVI D,01     //   D  = 1
+                            //   while ( B>0 ) {
+FAT:           CALL IMUL    //     D = D*B
+               DCR B        //     B = B-1
+               JNZ FAT      //   }
+               INX H        //   HL = HL+1   // result
+               MOV M,D      //   MEM[HL] = D // store result
+               HLT          // }
+END:

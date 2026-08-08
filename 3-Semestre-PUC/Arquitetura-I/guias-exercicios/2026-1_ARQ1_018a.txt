@@ -1,0 +1,119 @@
+PUC-Minas - ICEI - Ciência da Computação
+Arquitetura de Computadores I - Aula 2026-1_018a
+
+
+Anotações
+
+___
+
+Arquiteturas voltadas para pilhas - Stack Machines
+
+Operações aritméticas
+
+         2  +          3  -           4  <- value
+[0001 0000]   [0001 0100]    [0001 1000] <- address
+
+Com acumulador (2+(3-4))
+
+load A, 00010100    // A <-     MEM [00010100]
+sub  A, 00010100    // A <- A - MEM [00011000]
+add  A, 00010000    // A <- A + MEM [00010000]
+
+Com pilha      (2+(3-4))
+
+push MEM [00010000]
+push MEM [00010100]
+push MEM [00011000]
+sub
+add
+
+___
+
+Prioridade dos operadores
+
+ 2 * 3  + 4
+ 2 + 3  * 4
+ 
+(2 + 3) * 4
+ 2 * (3 + 4)
+
+___
+ 
+Avaliação de expressão 
+
+a.) usando pilha de operandos (1) e pilha de operadores (2)
+ 
+< 2           *         3        +        4        ;            entrada
+        
+                             3                 4
+           2        2   *    2   *    6   +    6   +   10  
+ ___ ___  ___ ___  ___ ___  ___ ___  ___ ___  ___ ___  ___ ___
+ (1) (2)  (1) (2)  (1) (2)  (1) (2)  (1) (2)  (1) (2)  (1) (2)  
+
+2 * 3 + 4  => 2 3 * 4 +   (RPN = Reverse Polish Notation - Jan Lukasiewicz)
+ 
+__
+
+< 2            +        3        *        4        ;            entrada
+
+                                               4       
+                             3        3   *    3   *   12
+           2        2   +    2   +    2   +    2   +    2   +   14    
+ ___ ___  ___ ___  ___ ___  ___ ___  ___ ___  ___ ___  ___ ___  ___ ___
+ (1) (2)  (1) (2)  (1) (2)  (1) (2)  (1) (2)  (1) (2)  (1) (2)  (1) (2)  
+
+2 + 3 * 4  => 2 3 4 * +   (RPN = Reverse Polish Notation)
+
+__
+
+< 2            3        +        4        *        ;           entrada
+        
+                    3        3                 4        4
+           2        2        2   +    5        5        5   *   20
+ ___ ___  ___ ___  ___ ___  ___ ___  ___ ___  ___ ___  ___ ___  ___ ___
+ (1) (2)  (1) (2)  (1) (2)  (1) (2)  (1) (2)  (1) (2)  (1) (2)  (1) (2)  
+
+(2 + 3) * 4  => 2 3 + 4 * (RPN = Reverse Polish Notation)
+ 
+__
+
+< 2            3        4        +        *        ;           entrada
+                             
+                             4
+                    3        3        7        7        
+           2        2        2   +    2        2   *   14       
+ ___ ___  ___ ___  ___ ___  ___ ___  ___ ___  ___ ___  ___ ___  
+ (1) (2)  (1) (2)  (1) (2)  (1) (2)  (1) (2)  (1) (2)  (1) (2)    
+
+ 2 * (3 + 4)  => 2 3 4 + * (RPN = Reverse Polish Notation)
+ 
+ 
+ b.) usando árvore de expressão (percorrimento em post-order)
+
+     +           +      = 10 = 2 * 3 + 4 = 2 3 * 4 + (RPN)    
+   /   \       /   \  
+  *     4    (6)     4    
+ / \ 
+2   3
+
+   +             +      = 14 = 2 + 3 * 4 = 2 3 4 * + (RPN)
+ /   \         /   \
+2     *       2    (12)
+     /  \
+    3    4
+    
+     *           *      = 20 = (2+3) * 4 = 2 3 + 4 * (RPN)      
+   /   \       /   \  
+  +     4    (5)    4    
+ / \ 
+2   3
+
+   *             *      = 14 = 2 * (3+4) = 2 3 4 + * (RPN)
+ /   \         /   \
+2     +       2    (7)
+     /  \
+    3    4
+   
+___
+___
+___

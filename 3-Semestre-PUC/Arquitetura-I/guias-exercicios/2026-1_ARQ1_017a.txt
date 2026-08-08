@@ -1,0 +1,549 @@
+PUC-Minas - ICEI - Ciência da Computação
+Arquitetura de Computadores I - Aula 2026-1_ARQ1_017a
+
+Anotações
+
+___
+
+Resumo da semana
+
+Arquitetura do Conjunto de Instruções (ISA)
+Memórias: Cache, Principal, Secundária e Virtual
+
+___
+
+Princípios para o projeto de computadores
+
+Há seis conceitos distintos usados no projeto de computadores,
+que aparte dos avanços tecnológicos, aparecem repetidamente:
+
+Localidade   : espacial e temporal,   e.g. caches
+Predição     : sem mudança de estado, e.g. branch prediction
+Especulação  : com mudança de estado, e.g. prefetching
+Indireção    :                        e.g. virtualization
+Paralelismo  :                        e.g. pipelining, OoO, vectors
+Epecialização:                        e.g. GPUs, accelerators
+
+
+01. Princípio da localidade de referência
+
+É tendência da execução sequencial de programas 
+a reutilização de dados e instruções que tenham  
+sido referenciados recentemente, como em repetições 
+ou estruturas de dados: arranjos, listas e tabelas. 
+
+É possível prever, com razoável precisão, 
+quais instruções ou dados serão usados em 
+futuro próximo, e aperfeiçoar o desempenho.
+
+Há dois aspectos comuns a serem considerados:
+
+1. Localização temporal
+representa a (alta) probabilidade de que 
+uma instrução executada recentemente seja 
+realizada novamente em um curto espaço de tempo 
+(repetições, por exemplo).
+
+Objetivo: Melhor manter instruções/dados acessados 
+          recentemente em local mais próximo para a
+          próxima execução.
+          Pode haver cache de instruções e/ou de dados.
+
+2. Localização espacial
+representa a (alta) probabilidade de que 
+instruções próximas àquela executada 
+recentemente sejam executadas também em futuro próximo.
+
+Objetivo: Mover blocos de instruções/dados para 
+          níveis mais altos na hierarquia de memória, 
+          na expectativa serem usados proximamente.
+
+___
+
+02. Tipos de memórias caches
+
+1. mapeamento direto
+   Cada bloco só pode ser colocado em um lugar na cache.
+   A função de mapeamento é geralmente uma função modular (%).
+
+        ________________________ 
+       |  TAG  | INDEX | OFFSET |<--- endereço
+       |_______|_______|________|
+           |       |             
++----------+       |             
+| +----------------+             
+| |     ________________________ 
+| |    | V | TAG |     DATA     |
+| |    |---|-----|--------------|
+| | 0  |   |     |              |
+| |    |---|-----|--------------|
+| | 1  |   |     |              |
+| |    |---|-----|--------------|
+| | 2  |   |     |              |
+| |    |---|-----|--------------|
+| |    |   |     |              |
+| |    |---|-----|--------------|
++-+===>| ? | ??? |              |---> dado encontrado?
+       |---|-----|--------------|
+       |   |     |              |
+       |---|-----|--------------|
+       |   |     |              |
+   n-1 |___|_____|______________|
+
+   Funcionamento:
+   - endereço separado em { TAG, INDEX, OFFSET }
+   - o índice será examinado na tabela da cache
+     - se o bit de validade (V) for 0, 
+       falta dado (miss)
+     - se o bit de validade (V) for 1,
+       a TAG do endereço será comparada com a da tabela
+       - se coincidirem, dado encontrado (hit)
+       - senão, falta dado (miss)
+   - caso encontrar (hit) , o dado será retornado
+     caso contrário (miss), o dado será buscado na memória
+
+   Vantagem
+   - simples de implementar
+   Desvantagem
+   - se houver necessidade de acessos frequentes
+     a dois blocos com o mesmo mapeamento,
+     a taxa de faltas será mais alta
+
+           MEMÓRIA   
+  addr  _____________                          
+       |  00001100   |                         
+    0  |             |                         
+       |-------------|               CACHE     
+    1  |             |           _____________ 
+       |-------------|        0 |             |<=== 
+    2  |             |        1 |             |
+       |-------------|        2 |             |
+    3  |             |        3 |_____________|
+       |-------------|                         
+    4  |  00001101   |                         
+       |-------------|        Exemplo: (addr%4)
+    5  |             |        0  ->  000000[00]
+       |-------------|        4  ->  000001[00]
+       |     ...     |                         
+       |_____________|                         
+
+
+2. mapeamento associativo
+   Cada bloco só pode ser colocado em um lugar na cache.
+   A função de mapeamento é geralmente uma função modular (%)
+   e uma referência relativa ("offset").
+ 
+        ________________________ 
+       |  TAG  |         OFFSET |<--- endereço
+       |_______|________________|
+           |                     
++----------+                     
+|                                             
+|       ________________________ 
+|      | V | TAG |     DATA     |
+|      |---|-----|--------------|
+|   0  |   |     |              |
+|      |---|-----|--------------|
+|   1  |   |     |              |
+|      |---|-----|--------------|
+|   2  |   |     |              |
+|      |---|-----|--------------|
++----->| ? | ??? |              |---> dado encontrado?
+|      |---|-----|--------------|
++----->| ? | ??? |              |---> dado encontrado?
+|      |---|-----|--------------|
++----->| ? | ??? |              |---> dado encontrado?
+       |---|-----|--------------|
+       |   |     |              |
+   n-1 |___|_____|______________|
+
+   Funcionamento:
+   - endereço separado em { TAG, OFFSET }
+   - a TAG será examinada na tabela da cache
+     - se o bit de validade (V) for 0, 
+       falta dado (miss)
+     - se o bit de validade (V) for 1,
+       dado encontrado (hit),
+       senão, falta dado (miss)
+   - caso encontrar (hit) , o dado será retornado
+     caso contrário (miss), o dado será buscado na memória
+
+   Vantagem
+   - eficiente
+   Desvantagens
+   - mais cara, pois precisa procurar pela TAG
+   - algoritmo de troca mais complexo
+
+           MEMÓRIA   
+  addr  _____________                          
+       |  00001100   |                         
+    0  |             |                         
+       |-------------|             TAG       CACHE   
+    1  |             |           ___________________ 
+       |-------------|        0 | 000001 | 01001101 |
+    2  |             |        1 |        |          |
+       |-------------|        2 | 000000 | 0001100  |<===
+    3  |             |        3 |________|__________|
+       |-------------|                         
+    4  |  01001101   |                         
+       |-------------|        Exemplo: (addr%4)
+    5  |             |        0  ->  000000[00]
+       |-------------|        4  ->  000001[00]
+       |     ...     |                         
+       |_____________|                         
+
+3. mapeamento associativo por grupo (N-way)
+   Solução de compromisso entre as anteriores, 
+   buscando unir vantagens de ambos.
+   
+        ________________________ 
+       |  TAG  | INDEX | OFFSET |<--- endereço
+       |_______|_______|________|
+           |       |             
++----------+       |             
+| +----------------+     block 0                       block 1 
+| |     ________________________      ________________________ 
+| |    | V | TAG |     DATA     |    | V | TAG |     DATA     |
+| |    |---|-----|--------------|    |---|-----|--------------|
+| | 0  |   |     |              |    |   |     |              |
+| |    |---|-----|--------------|    |---|-----|--------------|
+| | 1  |   |     |              |    |   |     |              |
+| |    |---|-----|--------------|    |---|-----|--------------|
+| | 2  |   |     |              |    |   |     |              |
+| |    |---|-----|--------------|    |---|-----|--------------|
+| |    |   |     |              |    |   |     |              |
+| |    |---|-----|--------------|    |---|-----|--------------|
++-+===>| ? | ??? |              |--->| ? | ??? |              |---> 
+       |---|-----|--------------|    |---|-----|--------------|
+       |   |     |              |    |   |     |              |
+       |---|-----|--------------|    |---|-----|--------------|
+       |   |     |              |    |   |     |              |
+   n-1 |___|_____|______________|    |___|_____|______________|
+
+   Funcionamento:
+   - haverá mais de um bloco cada um com sua tabela
+   - endereço separado em { TAG, INDEX, OFFSET }
+   - o índice será examinado na tabela de um bloco
+     - se o bit de validade (V) for 0, 
+       falta dado (miss)
+     - se o bit de validade (V) for 1,
+       a TAG do endereço será comparada com a da tabela
+       - se coincidirem, dado encontrado (hit)
+       - senão, irá procurar no próximo bloco 
+   - caso encontrar (hit) , o dado será retornado
+     caso contrário (miss), o dado será buscado na memória
+
+   Vantagem
+   - há um bom balaceamento de custos 
+     para altas taxas de sucessos
+   Desvantagem
+   - é mais complexa para ser implementada
+
+           MEMÓRIA   
+  addr  _____________                          
+       |  00001100   |                         
+    0  |             |                         
+       |-------------|             TAG       CACHE     
+    1  |             |           ___________________ 
+       |-------------|        0 | 000001 | 01001101 |<--- 
+    2  |             |        1 | 000000 | 00001100 |<===
+       |-------------|        2 |        |          |
+    3  |             |        3 |________|__________|
+       |-------------|                         
+    4  |  00001101   |                         
+       |-------------|        Exemplo: (addr%4)
+    5  |             |        0  ->  000000[00]
+       |-------------|        4  ->  000001[00]
+       |     ...     |                         
+       |_____________|                         
+
+___
+ 
+03. Memória Virtual 
+    = Cache + Memória Principal + Memória Secundária
+
+                 Memória                                  
+                 Virtual                     ____________ 
+                |       |                 / |            |
+                |       |                /  |            |
+                |       |    ___________    |            |
+                |       | / |           |   |            |
+    endereço    |       |/  |           |   |  memória   |
+    virtual      _______    |           |   |            |
+                |       |   |  memória  |   |            |
+   ---------+-->| cache |<=>|           |<=>|            |
+            |   |_______|   | principal |   |            |
+            |            \  |           |   |            |
+            |             \ |           |   | secundária |
+            |               |___________|   |            |
+            |                     ^      \  |            |
+            v                     |       \ |            |
+         tradução -------> endereço físico  |____________|
+            |                     |               ^       
+            |                     v               |            
+            +------------------> TLB -------------+            
+
+    Memórias caches e memórias virtuais são recursos
+    usados para se estender a capacidade de memória,
+    combinando porções de armazenamento em disco.
+    Uma estrutura de dado (TLB) é necessária para 
+    manter a localização de cada página, onde estiver.
+
+    TLB = Translation Lookaside Buffer (acesso de 5 ns)
+          memória cache para guardar mapeamentos de endereços
+          usados recentemente entre a memória virtual e a
+          memória física (acesso em torno de 100ns)
+
+       _____      _____ hit  _______ miss _________ miss _______
+      |     | VA |     | PA |       |    |         |    |       |
+      | CPU |--->| TLB |--->| cache |--->| memória |<==>| disco |
+      |_____|    |_____|    |_______|    |_________|    |_______|
+         ^   miss  | ^     hit | ^        hit |
+         |     ____v_|___      | |            |
+         |    | Tradução |     | |            |
+         |    |__________|     | |            |
+         |                     v |            v
+         +---------------------+-+------------+
+
+        _________________________ 
+       |  PAGE FRAMES   | OFFSET |<--- endereço 
+       |________________|________|    virtual (VA)
+ 
+   Funcionamento:
+   - endereço virtual (VA) separado em 
+   { PAGES_FRAMES, OFFSET }
+     PAGES FRAMES são porções da memória virtual
+     OFFSET       é uma posição em uma PAGE FRAME
+   - endereço físico  (PA) é o endereço real
+
+   - a página selecionada é buscada na TLB
+     usando o princípio de mapeamento associativo
+     - se encontrar (TLB hit), usará o dado 
+       da TLB para buscar a página
+     - senão, procurará pela página 
+       usando o princípio de mapeamento direto
+       - se encontrar (PAGE TABLE hit), o dado
+         será buscado de acordo com a informação
+         na PAGE TABLE e a TLB será atualizada
+       - senão, haverá falta (PAGE TABLE miss)
+         e o dado deverá ser buscado na memória
+         secundária
+          
+Exemplo:
+Intel i7 (2008)
+( Bloomfield, Lynnfield etc) 
+endereço virtual de 48 bits
+endereço físico  de 52 bits
+página de 4 MB (Linux usa páginas de 4 kB)
+
+cada página tem uma entrada de 4 bytes
+tamanho da TLB 250 GB ???
+
+Solução: Tradução de endereços em vários níveis !
+
+___
+
+Tradução de endereço
+
+ _______________________ 
+| PAGE  NUMBER | OFFSET | VA - Virtual Address
+|______________|________|
+    |               |    
+ ___v___            |    
+| PAGE  |           |    
+| TABLE |           |    
+|_______|           |    
+    |               |    
+ ___v_______________v___ 
+| BLOCK NUMBER | OFFSET | PA - Physical Address
+|______________|________|
+
+Exemplo
+
+PAGE TABLE (Direct Map Format)
+Page  Presence Block No.           Other attributes
+No.   bit      /Disk address       like protection 
+0     1        7                   read only       
+1     0        Sector  6, Track 18                 
+2     1        45                  not cacheable   
+3     1        4                                   
+4     0        Sector 24, Track 32                 
+
+PAGE TABLE (Associative Map Format)
+Page           Block No.           Other attributes
+No.            /Disk address                       
+0              7                   read only       
+2              45                  not cacheable   
+3              4                   read-write      
+
+Address translation overhead
+Average Memory Access Time 
+= Hit time (no page fault) 
++ Miss rate (page fault rate) * Miss penalty
+
+Examples of VM performance
+
+Hit  time       = 50 ns
+Page fault rate = 0.001%
+Miss penalty    = 2 ms
+
+Tav             = 50 + (10e-5) * (2 * 10e6) ns = 70 ns
+
+Como melhorar a performance?
+1. Hit time     -> TLB
+2. Miss ratio   -> melhorar o tamanho 
+                   trashing - tempo perdido 
+                              na movimentação de dados
+3. Miss penalty -> usar cache de disco
+
+Políticas comuns para trocas de páginas
+
+- LRU - Least Recently   Used
+- LFU - Least Frequently Used
+- Random
+
+Escrita em memória virtual
+
+Write-through não é prática
+Write-back    faz mais sentido
+A tabela de páginas deve registrar as "dirt pages".
+Não deve haver sobretrabalho para descartar
+uma página não marcada, mas ao fazê-lo  com
+as marcadas, deverão ser escritas em disco.
+ 
+
+___
+
+Exemplo de especificação de memória virtual paginada
+
+Page size                4KB – 64 KB
+Hit  time                50-100 CPU  clock cycles
+Miss penalty             10e6 - 10e7 clock cycles
+ Access   time           0.8 * 10e6 – 0.8 * 10e7 clock cycles
+ Transfer time           0.2 * 10e6 – 0.2 * 10e7 clock cycles
+Miss rate                0.00001% - 0.001%
+Virtual address          4 GB - 16 * 10e18 byte  
+Space size
+
+___
+               
+04. Considerações para projeto de uma hierarquia de memórias
+
+       Memória
+      /       \
+     ROM      RAM
+             /   \
+         SRAM     DRAM
+        (cache)  (main)
+        (L1,L2)
+
+- a unidade mínima de informação presente       (ou ausente) 
+  memória cache        : bloco        (tamanho)
+  para memória virtual : páginas      (tamanho e quantidade)
+
+- as taxas de tentativas de acesso com sucesso ("hit  rate")
+
+  hit_ratio = hit / (hit+miss) = #hits / #total_acessos
+
+- as taxas de tentativas de acesso sem sucesso ("miss rate"), 
+  no nível superior 
+  memória cache        : "miss"             (falta na cache)
+  para memória virtual : "page fault"       (falta a página)
+
+  miss_ratio = miss / (hit+miss) = #miss / #total_acesso = 1-hit_ratio
+
+- penalização no desempenho se a tentativa não tiver sucesso 
+  ("miss penalty")
+
+
+Especificações típicas para memória cache
+
+Block size   4-64 bytes
+Hit time     1-2  clock cycles
+Miss penalty 8-32 clock cycles
+ Access      6-10 clock cycles
+ Transfer    2-22 clock cycles
+Miss rate    1-20%
+Cache size
+ L1            8 kB - 64 kB
+ L2          128 kB -  2 MB
+Cache speed
+ L1          0.50 ns (8 GB/s)
+ L2*         0.75 ns (6 GB/s)
+             on-chip cache
+
+Exemplo de avaliações de funcionamento
+
+// matriz com armazenamento por linhas
+int sum_array_rows ( int a[4][4] )
+{
+ int x, t, sum = 0;
+ for (x = 0; x < 4; x++)    // rows
+    for (y = 0; y < 4; y++) // columns
+      sum = sum + a[x][y];
+ return sum;
+}
+
+block_size = 4 (por bloco)
+word_size  = 4 (bytes)
+
+a[x][y] y=0    y=1    y=2    y=3
+x=0     w[0]   w[1]   w[2]   w[3]
+       (miss) (hit ) (hit ) (hit )
+x=1     w[4]   w[5]   w[6]   w[7]
+       (miss) (hit ) (hit ) (hit )
+x=2     w[8]   w[9]   w[10]  w[11]
+       (miss) (hit ) (hit ) (hit )
+x=3     w[12]  w[13]  w[14]  w[15]
+       (miss) (hit ) (hit ) (hit )
+
+hit_ratio = 3/4 * 100 = 75%
+
+// matriz com armazenamento por colunas
+int sum_array_rows ( int a[4][4] )
+{
+ int x, t, sum = 0;
+ for (y = 0; y < 4; y++)
+    for (x = 0; x < 4; x++)
+     sum = sum + a[x][y];
+ return sum;
+}
+
+block_size = 4 (por bloco)
+word_size  = 4 (bytes)
+
+a[x][y] y=0    y=1    y=2    y=3
+x=0     w[0]   w[1]   w[2]   w[3]
+       (miss) (miss) (miss) (miss)
+x=1     w[4]   w[5]   w[6]   w[7]
+       (miss) (miss) (miss) (miss)
+x=2     w[8]   w[9]   w[10]  w[11]
+       (miss) (miss) (miss) (miss)
+x=3     w[12]  w[13]  w[14]  w[15]
+       (miss) (miss) (miss) (miss)
+
+hit_ratio = 0
+
+___
+
+Vantagens de códigos com melhor aproveitamento de caches
+- melhor desempenho com a redução de faltas ("miss")
+- minimização de acessos à memória
+  redução de consumo de potência (eficiência energética)
+- facilidade para otimizar para arquiteturas específicas
+
+Desvantagens de códigos com aproveitamento de caches
+- aumento da complexidade
+  melhorias no layout da memória e nos padrões de acessos
+- pode resultar em códigos executáveis maiores
+  (poderia afetar o uso geral de toda a memória do sistema)
+- dificuldade na depuração
+  em geral pode ser mais difícil de depurar
+  (pode não ficar claro a razão do porquê ocorre uma falta
+   ou como otimizar certa seção de código para melhor 
+   desempenho da memória cache)
+
+___
+
+
+
