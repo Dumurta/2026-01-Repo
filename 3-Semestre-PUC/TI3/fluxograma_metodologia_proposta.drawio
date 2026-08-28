@@ -1,0 +1,161 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="metodologia-proposta-v2">
+    <mxGraphModel dx="1414" dy="765" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1200" background="light-dark(#FFFFFF,#FAFAFA)" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Título -->
+        <mxCell id="title" parent="1"
+          style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#ffffff;"
+          value="Metodologia da Proposta de Pesquisa" vertex="1">
+          <mxGeometry height="40" width="600" x="125" y="20" as="geometry" />
+        </mxCell>
+
+        <!-- 1. Definição do problema e hipótese — vermelho (#e51400) -->
+        <mxCell id="step1" parent="1"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e51400;strokeColor=#B20000;fontColor=#ffffff;fontSize=13;"
+          value="&lt;b&gt;1. Definição do problema e hipótese&lt;/b&gt;&lt;br&gt;O uso irrestrito de IA atenua o desenvolvimento cognitivo de iniciantes?"
+          vertex="1">
+          <mxGeometry height="65" width="500" x="175" y="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr1" edge="1" parent="1" source="step1" target="step2"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#ffffff;strokeColor=light-dark(#000000,#0A0A0A);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 2. Revisão da literatura — roxo (#76608a) -->
+        <mxCell id="step2" parent="1"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;fontSize=13;"
+          value="&lt;b&gt;2. Revisão da literatura (concluída)&lt;/b&gt;&lt;br&gt;Levantamento bibliográfico · 6 artigos Qualis A1/A2"
+          vertex="1">
+          <mxGeometry height="60" width="500" x="175" y="185" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr2" edge="1" parent="1" source="step2" target="step3"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#ffffff;strokeColor=light-dark(#000000,#010101);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 3. Delineamento experimental — azul (#0050ef) -->
+        <mxCell id="step3" parent="1"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;fontSize=13;"
+          value="&lt;b&gt;3. Delineamento experimental&lt;/b&gt;&lt;br&gt;Estudo quasi-experimental · Grupo controle vs. experimental · Um semestre"
+          vertex="1">
+          <mxGeometry height="65" width="550" x="150" y="285" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr3" edge="1" parent="1" source="step3" target="step4"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#ffffff;strokeColor=light-dark(#000000,#070707);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 4. Seleção de participantes — vermelho escuro (#a20025) -->
+        <mxCell id="step4" parent="1"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a20025;strokeColor=#6F0000;fontColor=#ffffff;fontSize=13;"
+          value="&lt;b&gt;4. Seleção de participantes&lt;/b&gt;&lt;br&gt;Alunos de programação iniciante · PUC Minas · Termo de consentimento"
+          vertex="1">
+          <mxGeometry height="60" width="500" x="175" y="390" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr4" edge="1" parent="1" source="step4" target="step5"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#ffffff;strokeColor=light-dark(#000000,#010101);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 5. Instrumento de coleta — verde (#60a917) -->
+        <mxCell id="step5" parent="1"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;fontSize=13;"
+          value="&lt;b&gt;5. Instrumento de coleta&lt;/b&gt;&lt;br&gt;Pré-teste · Tarefas de programação · Questionário de uso · Pós-teste"
+          vertex="1">
+          <mxGeometry height="65" width="550" x="150" y="490" as="geometry" />
+        </mxCell>
+
+        <!-- Setas de bifurcação para os dois grupos -->
+        <mxCell id="arr5a" edge="1" parent="1" source="step5" target="groupA"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#ffffff;strokeColor=light-dark(#000000,#070707);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr5b" edge="1" parent="1" source="step5" target="groupB"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#ffffff;strokeColor=light-dark(#000000,#070707);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 6a. Grupo controle — azul claro (#1ba1e2) -->
+        <mxCell id="groupA" parent="1"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;fontSize=13;"
+          value="&lt;b&gt;6a. Grupo controle&lt;/b&gt;&lt;br&gt;Resolve tarefas &lt;b&gt;sem&lt;/b&gt; auxílio de IA"
+          vertex="1">
+          <mxGeometry height="65" width="310" x="60" y="615" as="geometry" />
+        </mxCell>
+
+        <!-- 6b. Grupo experimental — âmbar (#f0a30a) -->
+        <mxCell id="groupB" parent="1"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0a30a;strokeColor=#BD7000;fontColor=#ffffff;fontSize=13;"
+          value="&lt;b&gt;6b. Grupo experimental&lt;/b&gt;&lt;br&gt;Resolve tarefas &lt;b&gt;com&lt;/b&gt; IA (ChatGPT / Copilot)"
+          vertex="1">
+          <mxGeometry height="65" width="310" x="480" y="615" as="geometry" />
+        </mxCell>
+
+        <!-- Setas convergindo para step7 -->
+        <mxCell id="arrA" edge="1" parent="1" source="groupA" target="step7"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#ffffff;strokeColor=light-dark(#000000,#070707);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrB" edge="1" parent="1" source="groupB" target="step7"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#ffffff;strokeColor=light-dark(#000000,#070707);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 7. Coleta de dados — vermelho escuro (#a20025) -->
+        <mxCell id="step7" parent="1"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a20025;strokeColor=#6F0000;fontColor=#ffffff;fontSize=13;"
+          value="&lt;b&gt;7. Coleta de dados&lt;/b&gt;&lt;br&gt;Notas · Tempo de resolução · Logs de interação · Questionários de percepção"
+          vertex="1">
+          <mxGeometry height="65" width="500" x="175" y="740" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr7" edge="1" parent="1" source="step7" target="step8"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#ffffff;strokeColor=light-dark(#000000,#010101);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 8. Análise dos dados — roxo (#76608a) -->
+        <mxCell id="step8" parent="1"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;fontSize=13;"
+          value="&lt;b&gt;8. Análise dos dados&lt;/b&gt;&lt;br&gt;Comparação estatística · Esforço cognitivo · Retenção após remoção da ferramenta"
+          vertex="1">
+          <mxGeometry height="65" width="550" x="150" y="855" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr8" edge="1" parent="1" source="step8" target="step9"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#ffffff;strokeColor=light-dark(#000000,#070707);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 9. Discussão e conclusões — azul (#0050ef) -->
+        <mxCell id="step9" parent="1"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;fontSize=13;"
+          value="&lt;b&gt;9. Discussão e conclusões&lt;/b&gt;&lt;br&gt;Confronto com a literatura · Confirmação ou refutação da hipótese"
+          vertex="1">
+          <mxGeometry height="65" width="500" x="175" y="960" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr9" edge="1" parent="1" source="step9" target="step10"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#ffffff;strokeColor=light-dark(#000000,#010101);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 10. Diretrizes pedagógicas — slate (#647687) -->
+        <mxCell id="step10" parent="1"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#647687;strokeColor=#314354;fontColor=#ffffff;fontSize=13;fontStyle=1;"
+          value="&lt;b&gt;10. Proposta de diretrizes pedagógicas&lt;/b&gt;&lt;br&gt;Recomendações para integração responsável da IA no ensino superior de Computação"
+          vertex="1">
+          <mxGeometry height="65" width="550" x="150" y="1065" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
