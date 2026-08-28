@@ -46,6 +46,4 @@ O repositório está organizado por disciplinas para facilitar a navegação:
 ├── 📂 Arquitetura-I
 │   ├── 📂 guias-exercicios
 │   └── 📂 Material-arq1
-├── 📂 Calculo-I
 └── 📂 TI-III
-    └── 📂 Documentacao
